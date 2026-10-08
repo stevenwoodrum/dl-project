@@ -40,22 +40,22 @@ def _name_idx(name):
 
 # function called by Codabench
 # input is a list of two dictionaries the subject and the item. labeled is not used (no TTA in approach 1)
-# def predict(input, labeled=None):
-#     subject, item = input
+def predict(input, labeled=None):
+    subject, item = input
 
-#     # gets items 384 numbers and names 16 numbers
-#     item_vec = _item_vec(item.get("item_content", "") or "")
-#     name_vec = _NAME_TABLE[_name_idx(subject.get("normalized_name", "") or "")]
+    # gets items 384 numbers and names 16 numbers
+    item_vec = _item_vec(item.get("item_content", "") or "")
+    name_vec = _NAME_TABLE[_name_idx(subject.get("normalized_name", "") or "")]
 
-#     x = np.concatenate([item_vec, name_vec]) # 384 + 16 numbers
-#     h = np.maximum(x @ _W1 + _B1, 0.0)  # hidden layer
-#     z = float((h @ _W2 + _B2)[0])  # output before sigmoid
-#     p = 1.0 / (1.0 + np.exp(-np.clip(z, -50, 50))) # sigmoid
+    x = np.concatenate([item_vec, name_vec]) # 384 + 16 numbers
+    h = np.maximum(x @ _W1 + _B1, 0.0)  # hidden layer
+    z = float((h @ _W2 + _B2)[0])  # output before sigmoid
+    p = 1.0 / (1.0 + np.exp(-np.clip(z, -50, 50))) # sigmoid
 
-#     # codabench expects a float between 0 and 1, clip guarentees that range 
-#     return float(np.clip(p, 0.0, 1.0))
+    # codabench expects a float between 0 and 1, clip guarentees that range 
+    return float(np.clip(p, 0.0, 1.0))
 
 
 # model.py
-def predict(input: list[dict], labeled: list) -> float:
-    return float(0.5)
+# def predict(input: list[dict], labeled: list) -> float:
+#     return float(0.5)
