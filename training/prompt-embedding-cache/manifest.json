@@ -1,0 +1,37 @@
+{
+  "source_notebook_sha256": "560aed5214209321c6c0df41f37c21bc04770a0782be29ae473c70aac8bad478",
+  "cache_file": "e1aab125409ccb6e64eae7096aab4df64fb73130e4ffa1565a616a2a5a58e090.npz",
+  "cache_sha256": "fb99da1450bf45c8179bb1d2c2aa6a6e964055a6d399ba884d013ceb18141ef0",
+  "cache_bytes": 14071420,
+  "original_cache_sha256": "bf82f682b7bc74d3ff8c41e490e962fb4d187a3eba2db785743be88ad12a94ea",
+  "shape": [
+    8794,
+    384
+  ],
+  "finite_vectors": true,
+  "unit_normalized": true,
+  "max_absolute_difference_from_original_cache": 2.60770320892334e-07,
+  "warm_cache_check": "passed; encoder computation disabled",
+  "learning_settings_architecture_split_training_unchanged": true,
+  "notebook_outputs_cleared": true,
+  "encoded_prompts": 8794,
+  "encoding_failures": 0,
+  "truncated_prompts": 483,
+  "truncated_percent": 5.4923811689788495,
+  "multi_chunk_prompts": 2577,
+  "total_chunks": 13611,
+  "token_budget": 2048,
+  "chunk_window": 512,
+  "counts_source": "Completed local cold-cache run approach1_keras_local_cold_patience5_20261008T194928Z; counts reproduced during packaging",
+  "validation_seconds": 194.1885759580182,
+  "validated_data_files": 36,
+  "package_source_sha256": {
+    "all_benchmarks_flattened_training_keras.ipynb": "c02c721b2adbbfebbe7acde8bc91f2648dd9ce1ab81dad0ecce0270521bfa206",
+    "feature_utils.py": "de01f6095c2ad606dfc1ffc3901befeb280f6d0d6f7638c81988d73eb41a017a",
+    "keras_submission.py": "efc670045d5f9ccddabc6b187bb0964122e8bfc7506a15590acc15c18420365b",
+    "prompt_embedding_cache.py": "4aac8dadad7af57484a389006bc6e7f72154ab11bc2057f7199d99062764e7c5",
+    "requirements.txt": "a1a27ed1a0e4cc7bfdd9f926edf0017d58b3e24fba72fdb35649c9d6a44337e1",
+    "data_manifest.json": "0734f712f4db80827353b2b14d7badf0c45192ca815035061462c0ed4e6ed0dc",
+    "encoder_source.json": "e7c0124d7693ebbdf6a600d6d3ad19a6c3b1c1592fcf04d953ffcb22a6df5193"
+  }
+}

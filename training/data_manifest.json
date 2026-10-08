@@ -1,0 +1,186 @@
+{
+  "repo": "aims-foundations/measurement-db",
+  "revision": "bc8204d811823da849c6686bf124d4ca9f82e4de",
+  "files": [
+    {
+      "path": "matharena/benchmarks.parquet",
+      "sha256": "1a57bc6be40daa337a396fc6eb3a33111e4110ff40d92f3b199644c1d0fdeeb7",
+      "bytes": 16804
+    },
+    {
+      "path": "matharena/characterization.yaml",
+      "sha256": "6dace6539d28fdf2acd18574b7bfb061dc5fdd3c862243d5163371a15773f16d",
+      "bytes": 1463
+    },
+    {
+      "path": "matharena/items.parquet",
+      "sha256": "fb420494ce62adf519b12d8aa5101d5b2a47c6c246897c207c4860cb74ebf26a",
+      "bytes": 310264
+    },
+    {
+      "path": "matharena/metadata.yaml",
+      "sha256": "357522c288b03d64ab8f80f9defad7f52ba6d9d0d48974a86d11a058220d278e",
+      "bytes": 5065
+    },
+    {
+      "path": "matharena/response.parquet",
+      "sha256": "33aa835e229e56c167c3efdecdddd6bc76ba53f51d9e72a1e2136616a2e8ffcd",
+      "bytes": 1748755
+    },
+    {
+      "path": "matharena/subjects.parquet",
+      "sha256": "aeec4d5ae598d645d35b991cdc5e7fe73f4e529640f341228b6ee9c0c583153f",
+      "bytes": 13588
+    },
+    {
+      "path": "mmdocrag/benchmarks.parquet",
+      "sha256": "7fdaa5b0e6dcb90ff6353ce28c626779a84a151d4d09a7ee9bc7045ecfde2ee5",
+      "bytes": 16854
+    },
+    {
+      "path": "mmdocrag/characterization.yaml",
+      "sha256": "29b27de1e7bd90f7b3dde7de0b98074622bc56035e08de1b8ba315d305faad34",
+      "bytes": 1384
+    },
+    {
+      "path": "mmdocrag/items.parquet",
+      "sha256": "ee84a597cddc60ecbe5878bb049c3562d4244cb932778eecae83e421ecaa24de",
+      "bytes": 388955
+    },
+    {
+      "path": "mmdocrag/metadata.yaml",
+      "sha256": "a370fe2740e626d0e4a3d8214e32e88813e94b581e147cfd09d9076f2abd9f7f",
+      "bytes": 2477
+    },
+    {
+      "path": "mmdocrag/response.parquet",
+      "sha256": "bd4030df247315cb093c47da7b325caefb9d428c2f709edbf27bf918fb1da5bf",
+      "bytes": 6439197
+    },
+    {
+      "path": "mmdocrag/subjects.parquet",
+      "sha256": "e96520402fcd4490a1aba25dcc8cc8dde70bf0ec3a2127ebbdc4d03b96dff8ce",
+      "bytes": 9839
+    },
+    {
+      "path": "multi_swebench/benchmarks.parquet",
+      "sha256": "89efc2f590d1184180f036ced090614c24267c783bd889f6a338c2ff657b59eb",
+      "bytes": 16919
+    },
+    {
+      "path": "multi_swebench/characterization.yaml",
+      "sha256": "365f374614f0673ddfeda07065db367763040a7d1ff0072e9ce60cbe20d78617",
+      "bytes": 1522
+    },
+    {
+      "path": "multi_swebench/items.parquet",
+      "sha256": "eaf624e7cd49e9b43a05ec561bd451c5629b1f6c55387d33f2191286353fb778",
+      "bytes": 6170506
+    },
+    {
+      "path": "multi_swebench/metadata.yaml",
+      "sha256": "ccf85999b01a57f60c60529e204245c8770df1b6ae39794a4936125cfe341a52",
+      "bytes": 2220
+    },
+    {
+      "path": "multi_swebench/response.parquet",
+      "sha256": "33d31a4f3092a9408853d44235b06292708d2ab560a8af516756fd068db46f45",
+      "bytes": 1180533
+    },
+    {
+      "path": "multi_swebench/subjects.parquet",
+      "sha256": "06eca4d34e9201ff58c62923a7d76dc315cb9748b308aab21e43e111e3faac49",
+      "bytes": 9456
+    },
+    {
+      "path": "real_webagents/benchmarks.parquet",
+      "sha256": "49454f9a3012f78bc808aa7bcfd36f8ea0506c42579eaaba017577d893ad8a14",
+      "bytes": 16595
+    },
+    {
+      "path": "real_webagents/characterization.yaml",
+      "sha256": "3e67ef2ad4608070de85b3c106f99c78b1cdc32055929b42327c8e143fe11e8f",
+      "bytes": 1351
+    },
+    {
+      "path": "real_webagents/items.parquet",
+      "sha256": "5908db1f903c608e00911d50ca7ec0fa0e1b5bf4a09365d4ad52e0e1fde8f136",
+      "bytes": 48588
+    },
+    {
+      "path": "real_webagents/metadata.yaml",
+      "sha256": "a82ee43192904301b2b50a56b48ad9061480f2fca65e39ed7bd3fc9410f982b4",
+      "bytes": 1984
+    },
+    {
+      "path": "real_webagents/response.parquet",
+      "sha256": "b42381f563f513f61e18e0584fbe8d0e3a0fb48f69794cfcd5655ab9eaeff642",
+      "bytes": 94888
+    },
+    {
+      "path": "real_webagents/subjects.parquet",
+      "sha256": "e563ff232af0d2241220e9857cdc65c64b67b9301aae594677a60ff3308e7fa5",
+      "bytes": 8365
+    },
+    {
+      "path": "researchcodebench/benchmarks.parquet",
+      "sha256": "d1c8acda9cb98369a00f9c9b3aee63d9cc27e516d5d13ebc630b2662764faf23",
+      "bytes": 16391
+    },
+    {
+      "path": "researchcodebench/characterization.yaml",
+      "sha256": "f966b6488d913f653964a7efbf94abb16485187d6fad4d7d0350ceb51f0e8fd6",
+      "bytes": 3787
+    },
+    {
+      "path": "researchcodebench/items.parquet",
+      "sha256": "3aee135afa6b206cbce8867beca681811d95579db34a0c0eed1822d8c6b01268",
+      "bytes": 8928605
+    },
+    {
+      "path": "researchcodebench/metadata.yaml",
+      "sha256": "da9ea82f6a722959d32ba6e28978ff6f3cbf977e708a9691f2d9ad0240152a13",
+      "bytes": 2542
+    },
+    {
+      "path": "researchcodebench/response.parquet",
+      "sha256": "246db2bce64309a6c81346b5650a2ba93cb4abe67367a9d1ea2eef35407f24e9",
+      "bytes": 137884
+    },
+    {
+      "path": "researchcodebench/subjects.parquet",
+      "sha256": "c8dbb5ac589749270ddea2be6e456ea22b991d5ffc5107fd80d0865a77e94b3a",
+      "bytes": 8321
+    },
+    {
+      "path": "swe_rebench/benchmarks.parquet",
+      "sha256": "599823ff6cd9a8bf6d8c22f0e51f40f0f508569c6e41befecbbd62af8fd1cad7",
+      "bytes": 17988
+    },
+    {
+      "path": "swe_rebench/characterization.yaml",
+      "sha256": "91a361e571fc694d3085f6ec62b05c1a0613ddd7933783eec33b5349ffcbe87a",
+      "bytes": 1393
+    },
+    {
+      "path": "swe_rebench/items.parquet",
+      "sha256": "78fd183af256d62c7947a74ee714018d2eb3cce13191fa2d5f2f4593df8e3c5b",
+      "bytes": 39763649
+    },
+    {
+      "path": "swe_rebench/metadata.yaml",
+      "sha256": "c02bf580bac07c4e1d04ea81110028a737317219181e520ad3dbef087f8b36b6",
+      "bytes": 2766
+    },
+    {
+      "path": "swe_rebench/response.parquet",
+      "sha256": "2674db69e24f64a5a296378781d181b97cc4c6e07c5319f2ae351a04cfeebffd",
+      "bytes": 1505550
+    },
+    {
+      "path": "swe_rebench/subjects.parquet",
+      "sha256": "4f2f5f3481c2394acb74f2905a51dd12d4191c946f44dc48bf2ff1ebcee448ad",
+      "bytes": 6747
+    }
+  ]
+}
