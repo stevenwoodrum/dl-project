@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 from sentence_transformers import SentenceTransformer
+os.environ["KERAS_BACKEND"] = "torch"
 import keras
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -120,7 +121,7 @@ def train_model() -> keras.Model:
 # -----------------------------
 # Graph results of training/validation
 # -----------------------------
-def visualize_training(history: keras.History):
+def visualize_training(history: keras.callbacks.History):
     history_dict = history.history
     epochs = range(1, len(history_dict['loss']) + 1)
 
