@@ -69,3 +69,8 @@ These percentages are over unique local prompts, not response rows or private Co
 ## Export
 
 Choose a new `RUN_NAME` for each saved run. The export writes `runs/` and `dist/`, which are ignored by Git. Run the export checks before uploading a new artifact. The notebook is training code; inclusion here does not establish that its exported predictor has passed the hosted competition runtime.
+
+
+## Verified submission compatibility
+
+The included `prepare_chunk_features` helper repairs the hosted tokenizer API mismatch. The notebook exports that helper automatically. The exact previously trained model with this fix passed Codabench as submission **970407**; download [final18_tokfix_req.zip](../final18_tokfix_req.zip) with Git LFS. This verifies the compatibility path, while newly trained exports still need their own checks. See [SUBMISSION_FIX.md](SUBMISSION_FIX.md) for the controlled evidence, artifact checksum and model settings.
