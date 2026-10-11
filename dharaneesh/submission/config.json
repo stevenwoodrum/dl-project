@@ -1,0 +1,23 @@
+{
+  "recipe_version": 1,
+  "feature_mode": "metadata",
+  "method": {
+    "name": "metadata_logistic",
+    "features": "metadata",
+    "estimator": "logistic",
+    "loss": "bce",
+    "hidden": [
+      64,
+      16
+    ],
+    "dropout": 0.35,
+    "l2": 0.0001
+  },
+  "shrinkage": 0.5,
+  "adaptation_precision": 1.0,
+  "encoder_max_seq_length": 256,
+  "training_loss": "bce",
+  "selection_metric": "held-out benchmark equal-pair simulated Brier ALC",
+  "selection_is_development": true,
+  "refit_epochs": 1
+}

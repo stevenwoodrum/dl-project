@@ -1,0 +1,41 @@
+{
+  "run": "dharaneesh_20261011_v2",
+  "selected": {
+    "recipe_version": 1,
+    "feature_mode": "metadata",
+    "method": {
+      "name": "metadata_logistic",
+      "features": "metadata",
+      "estimator": "logistic",
+      "loss": "bce",
+      "hidden": [
+        64,
+        16
+      ],
+      "dropout": 0.35,
+      "l2": 0.0001
+    },
+    "shrinkage": 0.5,
+    "adaptation_precision": 1.0,
+    "encoder_max_seq_length": 256,
+    "training_loss": "bce",
+    "selection_metric": "held-out benchmark equal-pair simulated Brier ALC",
+    "selection_is_development": true,
+    "refit_epochs": 1
+  },
+  "selected_development_alc": 0.19809654195558213,
+  "eligible_pair_count": 140,
+  "final_checkpoint_validation": {
+    "row_brier": 0.18935745207786334,
+    "pair_brier": 0.17124340997233434,
+    "accuracy": 0.6587834080883715,
+    "row_ece": 0.020392825859616187,
+    "pairs": 147,
+    "rows": 26977
+  },
+  "checkpoint_training_seconds": 0.7474834001623094,
+  "all_public_refit_seconds": 0.8837985000573099,
+  "zip": "submission.zip",
+  "export_parity_cases": 8,
+  "warning": "Development folds were used for method selection; this is not an unbiased final test score."
+}
