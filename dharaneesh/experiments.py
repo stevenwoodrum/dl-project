@@ -238,7 +238,7 @@ def build_features(examples, mode, vectors=None):
     ])
 
 
-def fit_model(method, training, validation, all_features, epochs, seed, fixed_epochs=None):
+def fit_model(method, training, validation, all_features, epochs, seed, fixed_epochs=None, checkpoint_path=None):
     train_x = all_features[training.index]
     train_y = training["response"].to_numpy()
     sample_weights = pair_weights(training)
@@ -267,7 +267,9 @@ def fit_model(method, training, validation, all_features, epochs, seed, fixed_ep
         layers.append(keras.layers.Dense(1, activation="sigmoid"))
         model = keras.Sequential(layers)
         model.compile(optimizer=keras.optimizers.Adam(learning_rate=5e-4),
-                      loss="binary_crossentropy" if method.loss == "bce" else "mse")
+                      loss="binary_crossentropy" if method.loss == "bce" else "mse",
+                      weighted_metrics=[keras.metrics.MeanSquaredError(name="brier_score"),
+                                        keras.metrics.BinaryAccuracy(name="accuracy")])
         callbacks = []
         kwargs = {}
         if validation is not None:
@@ -283,7 +285,11 @@ def fit_model(method, training, validation, all_features, epochs, seed, fixed_ep
                 keras.callbacks.EarlyStopping(monitor="val_pair_brier", mode="min", patience=4,
                                                restore_best_weights=True),
             ]
-            kwargs["validation_data"] = (val_x, val_y[:, None])
+            if checkpoint_path is not None:
+                callbacks.insert(1, keras.callbacks.ModelCheckpoint(
+                    checkpoint_path, monitor="val_pair_brier", mode="min", save_best_only=True,
+                ))
+            kwargs["validation_data"] = (val_x, val_y[:, None], pair_weights(validation))
         fitted = model.fit(train_x, train_y[:, None], sample_weight=sample_weights,
                            epochs=fixed_epochs or epochs, batch_size=512, verbose=2,
                            callbacks=callbacks, **kwargs)
@@ -362,18 +368,33 @@ def export_bundle(run_dir, method, weights, config, encoder_dir=None):
     return bundle, archive_path
 
 
-def package_saved_submission(output=None):
-    """Rebuild the selected predictor ZIP; no retraining or network access occurs."""
+def package_saved_submission(output=None, data_dir=None, encoder_dir=None):
+    """Rebuild the FNN ZIP from local weights and a local frozen encoder."""
     required = {"model.py", "features.py", "config.json", "weights.npz"}
     missing = [name for name in sorted(required) if not (SUBMISSION_DIR / name).is_file()]
     if missing:
         raise FileNotFoundError(f"Incomplete saved submission: {missing}")
-    archive_path = Path(output) if output else HERE / "submission.zip"
+    config = json.loads((SUBMISSION_DIR / "config.json").read_text())
+    if config.get("method", {}).get("estimator") != "fnn":
+        raise ValueError("The main submission must be an FNN, not a comparison baseline.")
+    if config.get("adaptation_precision") is not None:
+        raise ValueError("Strict Approach 1 must not use revealed-label adaptation.")
+    if config["feature_mode"] == "sbert":
+        encoder_dir = find_encoder(
+            data_dir or HERE.parent.parent, encoder_dir or os.environ.get("AIMS_ENCODER_DIR"),
+        )
+    archive_path = Path(output) if output else HERE / "submission_fnn.zip"
     archive_path.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(SUBMISSION_DIR.rglob("*")):
             if path.is_file() and "__pycache__" not in path.parts:
                 archive.write(path, path.relative_to(SUBMISSION_DIR).as_posix())
+        if config["feature_mode"] == "sbert":
+            for path in sorted(Path(encoder_dir).rglob("*")):
+                relative = path.relative_to(encoder_dir)
+                if (path.is_file() and not set(relative.parts) & {".cache", "onnx", "openvino"}
+                        and path.suffix in {".json", ".txt", ".safetensors"}):
+                    archive.write(path, (Path("text_encoder") / relative).as_posix())
     print(f"Submission ZIP: {archive_path.resolve()}")
     print(f"SHA-256: {file_sha256(archive_path)}")
     return archive_path.resolve()
@@ -407,6 +428,120 @@ def plot_results(run_dir, comparison, history):
         axes[1].legend(fontsize=8)
     fig.savefig(Path(run_dir) / "comparison.png", dpi=160)
     plt.close(fig)
+
+
+def plot_fnn_results(run_dir, history, validation, probabilities):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from sklearn.calibration import calibration_curve
+
+    history = pd.DataFrame(history)
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4), layout="constrained")
+    axes[0].plot(history["epoch"], history["brier_score"], label="training")
+    axes[0].plot(history["epoch"], history["val_pair_brier"], label="validation")
+    axes[0].set(title="FNN Brier score by epoch", xlabel="Epoch", ylabel="Pair-weighted Brier; lower is better")
+    axes[0].legend()
+    observed, predicted = calibration_curve(validation["response"], probabilities, n_bins=10)
+    axes[1].plot([0, 1], [0, 1], "--", color="gray", label="perfect calibration")
+    axes[1].plot(predicted, observed, marker="o", label="FNN")
+    axes[1].set(title="Validation calibration", xlabel="Predicted probability", ylabel="Observed success rate",
+                xlim=(0, 1), ylim=(0, 1))
+    axes[1].legend()
+    fig.savefig(Path(run_dir) / "fnn_training.png", dpi=150)
+    plt.close(fig)
+    fig, axis = plt.subplots(figsize=(6, 4), layout="constrained")
+    axis.plot(history["epoch"], history["accuracy"], label="training")
+    axis.plot(history["epoch"], history["val_accuracy"], label="validation")
+    axis.set(title="FNN accuracy by epoch", xlabel="Epoch", ylabel="Pair-weighted accuracy; higher is better",
+             ylim=(0, 1))
+    axis.legend()
+    fig.savefig(Path(run_dir) / "fnn_accuracy.png", dpi=150)
+    plt.close(fig)
+
+
+def check_export_predictions(examples, features, weights, bundle, config):
+    import sys
+
+    sys.path.insert(0, str(bundle))
+    specification = importlib.util.spec_from_file_location("fnn_export_parity", Path(bundle) / "model.py")
+    exported = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(exported)
+    probes = examples.iloc[np.linspace(0, len(examples) - 1, 8).astype(int)]
+    for index, row in probes.iterrows():
+        subject = {field: row[field] for field in RUNTIME_SUBJECT_FIELDS}
+        item = {"item_content": row["item_content"], "benchmark_id": "anonymous_benchmark",
+                "item_features": "", "interactors": ""}
+        target = [subject, item]
+        raw_probability = float(sigmoid(network_logits(features[[index]], weights))[0])
+        expected = 0.5 + config["shrinkage"] * (raw_probability - 0.5)
+        probability = exported.predict(target, [])
+        if not np.isclose(probability, expected, atol=1e-5):
+            raise AssertionError("Exported FNN differs from the training pipeline.")
+        if config["adaptation_precision"] is None:
+            if exported.predict(target, [[target, 1]]) != probability:
+                raise AssertionError("Strict Approach 1 must ignore revealed labels.")
+    return len(probes)
+
+
+def train_fnn_submission(data_dir, run_name, loss="brier", epochs=20, seed=42, encoder_dir=None):
+    """Train and export the weekly FNN with a prompt-grouped 80/20 split."""
+    if loss not in {"brier", "bce"}:
+        raise ValueError("Choose brier or bce for the FNN training loss.")
+    run_dir = Path(data_dir) / "approach1_outputs" / "experiment_runs" / run_name
+    run_dir.mkdir(parents=True, exist_ok=False)
+    examples, inventory = load_examples(data_dir)
+    save_json(run_dir / "data_manifest.json", inventory)
+    encoder_dir = find_encoder(data_dir, encoder_dir)
+    vectors, encoder_source = cached_embeddings(
+        examples, data_dir, encoder_dir, Path(data_dir) / "approach1_cache" / "experiment_cache",
+    )
+    features = build_features(examples, "sbert", vectors)
+    training, validation = grouped_split(examples, seed=seed)
+    method = METHODS[f"sbert_fnn_{loss}"]
+    print(f"FNN {loss}: training={len(training):,}, validation={len(validation):,}; input dimensions={features.shape[1]}",
+          flush=True)
+    weights, history, best_epoch, seconds = fit_model(
+        method, training, validation, features, epochs, seed, checkpoint_path=run_dir / "best_fnn.keras",
+    )
+    probabilities = sigmoid(network_logits(features[validation.index], weights))
+    metrics = scores(validation, probabilities)
+    config = {
+        "recipe_version": RECIPE_VERSION, "feature_mode": "sbert", "method": asdict(method),
+        "shrinkage": 1.0, "adaptation_precision": None, "encoder_max_seq_length": 256,
+        "training_loss": loss, "selection_metric": "grouped validation equal-pair Brier",
+        "input_dimensions": features.shape[1], "best_epoch": best_epoch, "refit_on_all_public": False,
+    }
+    bundle, archive_path = export_bundle(run_dir, method, weights, config, encoder_dir)
+    parity_cases = check_export_predictions(examples, features, weights, bundle, config)
+    pd.DataFrame(history).to_csv(run_dir / "fnn_history.csv", index=False)
+    plot_fnn_results(run_dir, history, validation, probabilities)
+    save_json(run_dir / "encoder_source.json", encoder_source)
+    save_json(run_dir / "split_manifest.json", {
+        "training_prompts": sorted(training["prompt_group"].unique()),
+        "validation_prompts": sorted(validation["prompt_group"].unique()),
+    })
+    summary = {
+        "run": run_name, "model": "SBERT FNN", "config": config, "seed": seed,
+        "training_rows": len(training), "validation_rows": len(validation),
+        "training_prompts": training["prompt_group"].nunique(),
+        "validation_prompts": validation["prompt_group"].nunique(),
+        "epochs_completed": len(history), "best_epoch": best_epoch, "training_seconds": seconds,
+        "validation": metrics, "zip": str(archive_path), "zip_sha256": file_sha256(archive_path),
+        "export_parity_cases": parity_cases,
+        "warning": "This is checkpoint-selection validation, not an independent or hosted test score.",
+        "previous_hosted_0_160724_model": "logistic regression plus adaptation, not this FNN",
+    }
+    save_json(run_dir / "fnn_summary.json", summary)
+    # Keep the frozen encoder outside Git; it is included in the ready-to-upload ZIP.
+    for name in ("model.py", "features.py", "config.json", "weights.npz", "prediction_config.json", "requirements.txt"):
+        shutil.copy2(bundle / name, SUBMISSION_DIR / name)
+    result_dir = HERE / "results"
+    for name in ("fnn_history.csv", "fnn_training.png", "fnn_accuracy.png", "fnn_summary.json"):
+        shutil.copy2(run_dir / name, result_dir / name)
+    shutil.copy2(archive_path, HERE / "submission_fnn.zip")
+    print(json.dumps(summary, indent=2), flush=True)
+    return run_dir
 
 
 def run_experiments(data_dir, run_name, methods=None, epochs=20, seed=42, encoder_dir=None):
@@ -530,8 +665,15 @@ def main():
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--encoder-dir", type=Path, default=os.environ.get("AIMS_ENCODER_DIR"))
+    parser.add_argument("--loss", choices=["brier", "bce"], default="brier")
+    parser.add_argument("--compare", action="store_true", help="Run optional baseline comparisons instead of the main FNN.")
     args = parser.parse_args()
-    run_experiments(args.data_dir, args.run_name, args.methods, args.epochs, args.seed, args.encoder_dir)
+    if args.compare:
+        run_experiments(args.data_dir, args.run_name, args.methods, args.epochs, args.seed, args.encoder_dir)
+    else:
+        if args.methods:
+            parser.error("Use --compare when choosing comparison methods; the main model is always an FNN.")
+        train_fnn_submission(args.data_dir, args.run_name, args.loss, args.epochs, args.seed, args.encoder_dir)
 
 
 if __name__ == "__main__":

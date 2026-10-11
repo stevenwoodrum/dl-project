@@ -8,11 +8,13 @@ from pathlib import Path
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+os.environ.setdefault("USE_TF", "0")
+os.environ.setdefault("USE_FLAX", "0")
 
 import numpy as np
 
 from features import (
-    RECIPE_VERSION, adapt_probability, feature_vector, network_logits, sigmoid, subject_key,
+    RECIPE_VERSION, adapt_probability, clean, feature_vector, network_logits, sigmoid, subject_key,
 )
 
 BASE = Path(__file__).resolve().parent
@@ -45,7 +47,7 @@ def item_embedding(text):
 
 def base_probability(subject, item):
     config, weights, _ = load_bundle()
-    embedding = item_embedding(item.get("item_content", "")) if config["feature_mode"] == "sbert" else None
+    embedding = item_embedding(clean(item.get("item_content", ""))) if config["feature_mode"] == "sbert" else None
     vector = feature_vector(subject, item, config["feature_mode"], embedding)
     if vector.shape[0] != weights["W0"].shape[0]:
         raise ValueError("Feature dimensions do not match the trained model.")

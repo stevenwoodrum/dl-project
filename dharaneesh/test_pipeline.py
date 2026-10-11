@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 import zipfile
+from unittest.mock import patch
 
 import numpy as np
 import pandas as pd
@@ -91,14 +92,14 @@ class PipelineTests(unittest.TestCase):
                 self.assertFalse(any("__pycache__" in name for name in names))
 
     def test_new_training_run_exports_shared_predictor(self):
-        from .experiments import METHODS, export_bundle, fit_model
+        from .experiments import Method, export_bundle, fit_model
         from .submission.features import network_logits, sigmoid
 
         frame = pd.DataFrame({"pair_key": ["a"] * 20, "response": [0, 1] * 10})
         features = np.stack([feature_vector(
             {"normalized_name": f"model-{index % 2}"}, {"item_content": "sample"}, "metadata",
         ) for index in range(len(frame))])
-        method = METHODS["metadata_logistic"]
+        method = Method("tiny_fnn", "metadata", "fnn", "brier", hidden=(8, 4), dropout=0.0)
         weights, _, _, _ = fit_model(method, frame, None, features, epochs=1, seed=42)
         config = {"recipe_version": 1, "feature_mode": "metadata", "shrinkage": 1.0,
                   "adaptation_precision": None}
@@ -113,6 +114,30 @@ class PipelineTests(unittest.TestCase):
             )
             subprocess.run([sys.executable, "-c", code], cwd=bundle, check=True)
             self.assertTrue(archive.is_file())
+
+    def test_main_artifact_is_strict_fnn(self):
+        directory = Path(__file__).resolve().parent / "submission"
+        config = json.loads((directory / "config.json").read_text())
+        self.assertEqual(config["method"]["estimator"], "fnn")
+        self.assertIsNone(config["adaptation_precision"])
+        with np.load(directory / "weights.npz", allow_pickle=False) as weights:
+            self.assertEqual(set(weights.files), {"W0", "b0", "W1", "b1", "W2", "b2"})
+            self.assertEqual(weights["W0"].shape[1], 64)
+            self.assertEqual(weights["W1"].shape, (64, 16))
+            self.assertEqual(weights["W2"].shape, (16, 1))
+
+    def test_baseline_cannot_be_packaged_as_main_fnn(self):
+        from . import experiments
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ("model.py", "features.py", "weights.npz"):
+                (root / name).write_bytes(b"")
+            (root / "config.json").write_text(json.dumps({"method": {"estimator": "logistic"}}))
+            with patch.object(experiments, "SUBMISSION_DIR", root):
+                with self.assertRaisesRegex(ValueError, "must be an FNN"):
+                    experiments.package_saved_submission(root / "should_not_exist.zip")
+            self.assertFalse((root / "should_not_exist.zip").exists())
 
 
 if __name__ == "__main__":

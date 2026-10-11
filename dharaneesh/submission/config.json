@@ -1,11 +1,11 @@
 {
   "recipe_version": 1,
-  "feature_mode": "metadata",
+  "feature_mode": "sbert",
   "method": {
-    "name": "metadata_logistic",
-    "features": "metadata",
-    "estimator": "logistic",
-    "loss": "bce",
+    "name": "sbert_fnn_brier",
+    "features": "sbert",
+    "estimator": "fnn",
+    "loss": "brier",
     "hidden": [
       64,
       16
@@ -13,11 +13,12 @@
     "dropout": 0.35,
     "l2": 0.0001
   },
-  "shrinkage": 0.5,
-  "adaptation_precision": 1.0,
+  "shrinkage": 1.0,
+  "adaptation_precision": null,
   "encoder_max_seq_length": 256,
-  "training_loss": "bce",
-  "selection_metric": "held-out benchmark equal-pair simulated Brier ALC",
-  "selection_is_development": true,
-  "refit_epochs": 1
+  "training_loss": "brier",
+  "selection_metric": "grouped validation equal-pair Brier",
+  "input_dimensions": 644,
+  "best_epoch": 8,
+  "refit_on_all_public": false
 }
