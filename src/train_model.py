@@ -7,7 +7,6 @@ import keras
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
-from datasets import load_dataset
 import utils
 
 
@@ -24,6 +23,7 @@ import utils
 
 
 MODEL_FILE = "model.keras"
+RANDOM_SEED = 5814
 
 
 def save_model(model, filename):
@@ -35,42 +35,63 @@ def save_model(model, filename):
 
 
 def train_model() -> keras.Model:
-    """Minimal training function"""
+    """Train model"""
 
-    # Load the unified Parquet dataset
-    """df = pd.read_parquet(
-        "hf://datasets/aims-foundations/measurement-db@refs/convert/parquet"
-    )"""
+    import datasets
 
-    ds = load_dataset(
+    # TODO: Randomize samples of "responses"
+
+    def _merge_row(example):
+        """callback function that joins responses with their corresponding items"""
+        key = example["item_id"]
+        # Fetch matching data from the lookup table
+        ref_data = items_lookup_dict.get(key)
+        
+        # Merge the dictionaries
+        return {**example, **ref_data}
+
+    splits = "matharena+mmdocrag+multi_swebench+real_webagents+researchcodebench+swe_rebench"
+
+    print("Caching items by item_id")
+    items_ds = datasets.load_dataset(
         "aims-foundations/measurement-db",
-        split="train",
+        name="items",
+        split=splits
+    )
+    items_lookup_dict = {row["item_id"]: row for row in items_ds}
+    print("Number of items " + str(len(items_lookup_dict)))
+
+    print("Setting up responses stream")
+    responses_stream = datasets.load_dataset(
+        "aims-foundations/measurement-db",
+        name="responses",
+        split=splits,
         streaming=True
     )
 
-    # Get first N rows without downloading the whole dataset
-    N = 5
-    sample = [next(iter(ds)) for _ in range(N)]
-    print(sample)
+    joined_stream = responses_stream.map(_merge_row)
 
-    df = pd.DataFrame(sample)
+    sentences = []
+    responses = []
 
-    # Filter rows belonging to MathArena
-    items = df[df["benchmark"] == "matharena"]
+    # joined_stream is an iterator, so we can keep consuming it
+    for row in joined_stream:
+        # The merged row contains the item text and the response label
+        sentences.append(row["content"])
+        responses.append(float(row["response"]))
 
-    # If responses are stored in the same dataset, filter them too
-    responses = df[df["benchmark"] == "matharena"]
-    #print(responses.head)
+        # Optional: stop early during debugging
+        if len(sentences) >= 500:
+            break
 
-    merged = pd.merge(items, responses, how="left", on="item_id")
-    print(merged.shape)
-    merged = merged.head(500) # Experiment with only 50 samples of the MathArena responses initially
-
-    sentences = np.array(merged['content'])
-    responses = np.array(merged['response'])
-
-    embeddings = utils.get_sbert().encode(sentences, show_progress_bar=True).astype(np.float32)
-    print(embeddings.shape)
+    sbert = utils.get_sbert()
+    embeddings = sbert.encode(
+        sentences,
+        batch_size=64,
+        convert_to_numpy=True,
+        show_progress_bar=True
+    ).astype(np.float32)
+    #print(embeddings.shape)
 
     print("Building FNN with Keras...")
     model = keras.Sequential(
@@ -92,7 +113,7 @@ def train_model() -> keras.Model:
     y_train = np.array(responses, dtype=np.float32)
 
     X_tr, X_val, y_tr, y_val = train_test_split(
-        X_train, y_train, test_size=0.20, random_state=5814, stratify=y_train
+        X_train, y_train, test_size=0.20, random_state=RANDOM_SEED, stratify=y_train
     )
 
     history = model.fit(

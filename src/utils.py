@@ -1,10 +1,12 @@
 import os
 
+sbert = None
+
 def get_sbert():
     """Return a singleton instance of an SBERT model"""
-    from sentence_transformers import SentenceTransformer
     global sbert
     if sbert is None:
+        from sentence_transformers import SentenceTransformer
         sbert = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
     return sbert
 
