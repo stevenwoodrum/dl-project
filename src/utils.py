@@ -36,7 +36,7 @@ def create_submission_zip(zip_name: str="submission", files: list=None):
 
     if not files:
         files = ["model.py", "test_model.py", "utils.py", "models.txt",
-                 "model.keras"]
+                 "model.keras", "../requirements.txt"]
 
     with tempfile.TemporaryDirectory() as tmpdir:
         for f in files:
