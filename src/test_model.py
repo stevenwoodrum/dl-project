@@ -3,6 +3,7 @@ import os
 os.environ["KERAS_BACKEND"] = "torch"
 import keras
 import utils
+import numpy as np
 
 MODEL_FILE = "model.keras"
 model = None
@@ -20,11 +21,13 @@ def _load_model():
     return model
 
 
-def single_prediction(subject: dict, item: dict) -> float:
+def single_prediction(input: list, labeled: list | None = None) -> float:
     """Make a prediction on a single item"""
     subject, item = input
+    x1 = utils.get_sbert().encode([item['item_content']])
+    x2 = utils.get_sbert().encode([subject['normalized_name']])
+    x = np.concatenate((x1, x2), axis=1)
     model = _load_model()
-    x = utils.get_sbert().encode([item['item_content']])
     prediction = model.predict(x)
     print("Predictions")
     print(prediction)

@@ -1,7 +1,7 @@
 import os
 #os.environ.setdefault("HF_HUB_OFFLINE", "1") # hf offline
 import numpy as np
-import pandas as pd
+import datasets
 os.environ["KERAS_BACKEND"] = "torch"
 import keras
 from sklearn.model_selection import train_test_split
@@ -10,12 +10,12 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 import utils
 
 
+
 # TODO:
-# Add subject ID (condition prediction on subject model)
 # Do a "leave one benchmark out" for 
-# Chkpt one: strengths/limitations of leave-one-benchmark-out approach.
+#   Chkpt one: strengths/limitations of leave-one-benchmark-out approach.
 # Mess with activation functions, hyperparameters, optimizers etc, to add 
-# content to checkpoint one report
+# Add content to checkpoint one report
 # check Discord etc for recent reporting on application of IRT
     # - make sure we're leveraging, not plagiarizing
     # - make sure we're accounting for the latest and greatest
@@ -35,33 +35,43 @@ def save_model(model, filename):
 
 
 def train_model() -> keras.Model:
-    """Train model"""
+    """Train model using reservoir-sampled responses and efficient SBERT batching."""
 
-    import datasets
+    import random
+    random.seed(RANDOM_SEED)
 
-    # TODO: Randomize samples of "responses"
+    splits = (
+        "matharena+mmdocrag+multi_swebench+real_webagents+"
+        "researchcodebench+swe_rebench"
+    )
 
-    def _merge_row(example):
-        """callback function that joins responses with their corresponding items"""
-        key = example["item_id"]
-        # Fetch matching data from the lookup table
-        ref_data = items_lookup_dict.get(key)
-        
-        # Merge the dictionaries
-        return {**example, **ref_data}
+    SAMPLE_SIZE = 10000
 
-    splits = "matharena+mmdocrag+multi_swebench+real_webagents+researchcodebench+swe_rebench"
-
+    # ---------------------------------------------------------
+    # Load lookup tables (items + subjects)
+    # ---------------------------------------------------------
     print("Caching items by item_id")
     items_ds = datasets.load_dataset(
         "aims-foundations/measurement-db",
         name="items",
         split=splits
     )
-    items_lookup_dict = {row["item_id"]: row for row in items_ds}
-    print("Number of items " + str(len(items_lookup_dict)))
+    items_lookup = {row["item_id"]: row for row in items_ds}
+    print(f"Items cached: {len(items_lookup)}")
 
-    print("Setting up responses stream")
+    print("Caching subjects by subject_id")
+    subjects_ds = datasets.load_dataset(
+        "aims-foundations/measurement-db",
+        name="subjects",
+        split=splits
+    )
+    subjects_lookup = {row["subject_id"]: row for row in subjects_ds}
+    print(f"Subjects cached: {len(subjects_lookup)}")
+
+    # ---------------------------------------------------------
+    # Streaming responses + reservoir sampling
+    # ---------------------------------------------------------
+    print("Streaming responses and performing reservoir sampling...")
     responses_stream = datasets.load_dataset(
         "aims-foundations/measurement-db",
         name="responses",
@@ -69,65 +79,110 @@ def train_model() -> keras.Model:
         streaming=True
     )
 
+    def _merge_row(example):
+        item = items_lookup.get(example["item_id"])
+        subject = subjects_lookup.get(example["subject_id"])
+        if item is None or subject is None:
+            return None
+        return {**example, **item, **subject}
+
     joined_stream = responses_stream.map(_merge_row)
 
-    sentences = []
-    responses = []
+    reservoir = []
+    n_seen = 0
 
-    # joined_stream is an iterator, so we can keep consuming it
     for row in joined_stream:
-        # The merged row contains the item text and the response label
-        sentences.append(row["content"])
-        responses.append(float(row["response"]))
+        if row is None:
+            continue
 
-        # Optional: stop early during debugging
-        if len(sentences) >= 500:
-            break
+        # Validate fields early
+        content = row.get("content")
+        subject_name = row.get("normalized_name")
+        response_val = row.get("response")
 
+        if not isinstance(content, str):
+            continue
+        if not isinstance(subject_name, str):
+            continue
+        if response_val is None:
+            continue
+
+        # Reservoir sampling
+        if len(reservoir) < SAMPLE_SIZE:
+            reservoir.append(row)
+        else:
+            j = random.randint(0, n_seen)
+            if j < SAMPLE_SIZE:
+                reservoir[j] = row
+
+        n_seen += 1
+
+    print(f"Reservoir sampled {len(reservoir)} rows from ~{n_seen} streamed rows")
+
+    # ---------------------------------------------------------
+    # Extract text + labels
+    # ---------------------------------------------------------
+    item_texts = [r["content"] for r in reservoir]
+    subject_texts = [r["normalized_name"] for r in reservoir]
+    labels = np.array([float(r["response"]) for r in reservoir], dtype=np.float32)
+
+    # ---------------------------------------------------------
+    # SBERT embedding (batched)
+    # ---------------------------------------------------------
+    print("Embedding item and subject text with SBERT...")
     sbert = utils.get_sbert()
-    embeddings = sbert.encode(
-        sentences,
-        batch_size=64,
+
+    item_embeddings = sbert.encode(
+        item_texts,
+        batch_size=128,
         convert_to_numpy=True,
         show_progress_bar=True
     ).astype(np.float32)
-    #print(embeddings.shape)
 
+    subject_embeddings = sbert.encode(
+        subject_texts,
+        batch_size=128,
+        convert_to_numpy=True,
+        show_progress_bar=True
+    ).astype(np.float32)
+
+    # Concatenate embeddings
+    X = np.concatenate([item_embeddings, subject_embeddings], axis=1)
+
+    # ---------------------------------------------------------
+    # Train/validation split
+    # ---------------------------------------------------------
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X, labels,
+        test_size=0.20,
+        random_state=RANDOM_SEED,
+    )
+
+    # ---------------------------------------------------------
+    # Build + train model
+    # ---------------------------------------------------------
     print("Building FNN with Keras...")
-    model = keras.Sequential(
-        [
-            keras.layers.Input(shape=(embeddings.shape[1],)), # input layer
-            keras.layers.Dense(2, activation="relu"), # hidden layer
-            keras.layers.Dense(1, activation="sigmoid") # output layer
-        ]
-    )
+    model = keras.Sequential([
+        keras.layers.Input(shape=(X.shape[1],)),
+        keras.layers.Dense(64, activation="relu"),
+        keras.layers.Dense(32, activation="relu"),
+        keras.layers.Dense(1, activation="sigmoid")
+    ])
 
-    model.compile(
-        loss="mse", # mean squared error equivalent to Brier score for binary events
-    )
-
+    model.compile(loss="mse")
     model.summary()
 
-    # Embed all training texts
-    X_train = np.vstack(embeddings)
-    y_train = np.array(responses, dtype=np.float32)
-
-    X_tr, X_val, y_tr, y_val = train_test_split(
-        X_train, y_train, test_size=0.20, random_state=RANDOM_SEED, stratify=y_train
-    )
-
     history = model.fit(
-        X_tr, 
-        y_tr, 
+        X_tr, y_tr,
         epochs=15,
         validation_data=(X_val, y_val)
     )
 
     visualize_training(history)
-
     save_model(model, MODEL_FILE)
 
     return model
+
 
 
 def visualize_training(history: keras.callbacks.History):

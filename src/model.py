@@ -58,9 +58,11 @@ import test_model
 
 def predict(input: list, labeled: list | None = None) -> float:
     """Return the predicted probability that the subject answers correctly."""
-    prediction = test_model.single_prediction(input, labeled)
-    if not isinstance(prediction, (int, float)):
-        raise TypeError(f"Model returned non-int or non-float: {prediction!r}")
+    raw_prediction = test_model.single_prediction(input, labeled)
+    try:
+        prediction = float(raw_prediction)
+    except (TypeError, ValueError, OverflowError) as e:
+        raise TypeError(f"Model returned non-numeric prediction: {raw_prediction!r}") from e
     if not 0.0 <= prediction <= 1.0:
         raise ValueError(f"Model returned out-of-range probability: {prediction}")
     return prediction
