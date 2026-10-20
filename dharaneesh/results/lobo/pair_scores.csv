@@ -1,0 +1,442 @@
+pair_key,brier,accuracy,rows,held_out,predictor
+multi_swebench::0060b6030d4c2297,0.271174100986215,0.4764216366158114,1442,multi_swebench,FNN
+multi_swebench::025aabe505688d89,0.2770795486843438,0.4434782608695652,115,multi_swebench,FNN
+multi_swebench::0771fe5228c63bc8,0.31181778958742046,0.37142857142857144,210,multi_swebench,FNN
+multi_swebench::0e87ac570be0d836,0.2908433317050095,0.375,80,multi_swebench,FNN
+multi_swebench::0f3db4570fff74a1,0.34062931815439335,0.27906976744186046,387,multi_swebench,FNN
+multi_swebench::16efb396e2d5a975,0.3297534942380576,0.3359375,128,multi_swebench,FNN
+multi_swebench::1c1d25ff392169fc,0.1785736138910629,0.7587209302325582,344,multi_swebench,FNN
+multi_swebench::207c39f830ba23ba,0.3091862651215987,0.456,500,multi_swebench,FNN
+multi_swebench::21783e6753f98050,0.32824197948616796,0.34849863512283896,1099,multi_swebench,FNN
+multi_swebench::24eef64fe5529abd,0.3062088865997833,0.4330708661417323,127,multi_swebench,FNN
+multi_swebench::28bd15affa843e2b,0.2754935437291427,0.46016381236038717,1343,multi_swebench,FNN
+multi_swebench::2b50203030771cd7,0.3089726127031879,0.41641337386018235,329,multi_swebench,FNN
+multi_swebench::2cc455fb34d0a9ad,0.30870792701543226,0.3785557986870897,457,multi_swebench,FNN
+multi_swebench::2f2d9bc6ef80b763,0.20115094208483966,0.6707779886148008,1054,multi_swebench,FNN
+multi_swebench::370de70a197c04ad,0.27680220633827973,0.45919778699861685,1446,multi_swebench,FNN
+multi_swebench::37c35d397d65cbd5,0.2791454724161968,0.5152173913043478,460,multi_swebench,FNN
+multi_swebench::38232d25a0ad0caf,0.25192774757305286,0.5271317829457365,129,multi_swebench,FNN
+multi_swebench::3a75ba40153f3d31,0.39237192696693274,0.16037735849056603,636,multi_swebench,FNN
+multi_swebench::3cd24d59a3eb8d36,0.20986494995878846,0.6598214285714286,1120,multi_swebench,FNN
+multi_swebench::3f2906bbb64dc1a7,0.3353410708379866,0.31338028169014087,1420,multi_swebench,FNN
+multi_swebench::404df11a8f0eb225,0.3032064210801576,0.44,300,multi_swebench,FNN
+multi_swebench::40a7fdaf49a952d1,0.3040808345311703,0.4393939393939394,330,multi_swebench,FNN
+multi_swebench::4195148f31e2ccbe,0.28448188695900634,0.4527363184079602,402,multi_swebench,FNN
+multi_swebench::43b3aa25f1c9ac54,0.31161692624803566,0.35656836461126007,373,multi_swebench,FNN
+multi_swebench::44445017f07cd5bb,0.37696683372848755,0.21805054151624548,1385,multi_swebench,FNN
+multi_swebench::478e32f5f2e8d435,0.2881815320921513,0.4142857142857143,1260,multi_swebench,FNN
+multi_swebench::497710dbee0c39f1,0.1605860283970167,0.7682838522809559,1381,multi_swebench,FNN
+multi_swebench::52d2da3dd5e8e892,0.3636288975485347,0.49019607843137253,255,multi_swebench,FNN
+multi_swebench::5b7d845b713f0a75,0.3320689555767956,0.3181818181818182,110,multi_swebench,FNN
+multi_swebench::5c145555b04ef5b5,0.26807270906706687,0.488,500,multi_swebench,FNN
+multi_swebench::615494f08b332496,0.3271669369590896,0.31877729257641924,1145,multi_swebench,FNN
+multi_swebench::684b9d536a71d22f,0.21678375829409288,0.6255144032921811,972,multi_swebench,FNN
+multi_swebench::6af81d85146bcb93,0.27654092636800615,0.46859903381642515,414,multi_swebench,FNN
+multi_swebench::6d2824c69903ab18,0.2798487988613063,0.4437627811860941,489,multi_swebench,FNN
+multi_swebench::724aee89f8778c84,0.4256817467939924,0.15269709543568466,1205,multi_swebench,FNN
+multi_swebench::72cff09aa4921232,0.1605051447767304,0.7839628893306826,1509,multi_swebench,FNN
+multi_swebench::77fdd84b9bc0ce7f,0.3321981351358594,0.28774703557312253,1265,multi_swebench,FNN
+multi_swebench::7fb4ac8032107770,0.3844739754565935,0.23419827012641384,1503,multi_swebench,FNN
+multi_swebench::80053c96384b7422,0.3163441097391089,0.4444444444444444,495,multi_swebench,FNN
+multi_swebench::805299b1004f8f9b,0.1856326966812081,0.7127659574468085,94,multi_swebench,FNN
+multi_swebench::822ca968c5445ac2,0.27579513266307787,0.48822269807280516,467,multi_swebench,FNN
+multi_swebench::824ab268396d500f,0.07762601346012643,0.957801766437684,1019,multi_swebench,FNN
+multi_swebench::85589dd8292f59fc,0.3154981388390846,0.35080645161290325,496,multi_swebench,FNN
+multi_swebench::861eb5f2bb11cae6,0.1924138693660449,0.7005988023952096,1503,multi_swebench,FNN
+multi_swebench::86def10d8ae79737,0.2653378571829271,0.5232323232323233,495,multi_swebench,FNN
+multi_swebench::884159882674fe77,0.31911697119852916,0.3209549071618037,377,multi_swebench,FNN
+multi_swebench::8c80d15675b87985,0.25726498520118785,0.531104199066874,1286,multi_swebench,FNN
+multi_swebench::8f12d093d149a8b3,0.3804052210513086,0.23420796890184645,1029,multi_swebench,FNN
+multi_swebench::8f6d5a5c51a8db9d,0.19264761430651073,0.6962457337883959,1172,multi_swebench,FNN
+multi_swebench::90a3f141484f3f29,0.35549445190839923,0.41216216216216217,148,multi_swebench,FNN
+multi_swebench::918ee3ad929f8490,0.25965809570050147,0.5382513661202186,366,multi_swebench,FNN
+multi_swebench::9459e87bf47ab79d,0.3624970834745648,0.2525737817433082,1457,multi_swebench,FNN
+multi_swebench::95c193154669589b,0.2947137298087439,0.4656964656964657,481,multi_swebench,FNN
+multi_swebench::a1a3bd9bfb400f47,0.2929966088920095,0.40145985401459855,685,multi_swebench,FNN
+multi_swebench::a21ee8b4dc43c0b3,0.2673382728779196,0.5,492,multi_swebench,FNN
+multi_swebench::a5e65b13dc82d0c1,0.2528876953603392,0.5754923413566739,457,multi_swebench,FNN
+multi_swebench::a753a478725d91c7,0.3652679155214248,0.2374429223744292,219,multi_swebench,FNN
+multi_swebench::aac580c3888aae09,0.27461475556517445,0.5116772823779193,471,multi_swebench,FNN
+multi_swebench::ae3fa496735e1e18,0.30380723817864197,0.4013761467889908,436,multi_swebench,FNN
+multi_swebench::b6291b37eb5f3f05,0.35641541994373044,0.25123762376237624,808,multi_swebench,FNN
+multi_swebench::b6de0c0aab96e405,0.34658672304079946,0.25418060200668896,897,multi_swebench,FNN
+multi_swebench::b875ada3e2ac99a6,0.280083745062692,0.46435845213849286,491,multi_swebench,FNN
+multi_swebench::b8dc37f628b47076,0.2676068755284841,0.4836795252225519,674,multi_swebench,FNN
+multi_swebench::b97ba842627ad593,0.07794270728326087,0.9408914728682171,1032,multi_swebench,FNN
+multi_swebench::b97c9a910c872ecc,0.2798847364639691,0.5191489361702127,470,multi_swebench,FNN
+multi_swebench::bbf86ff66c98ae6e,0.22458360642241257,0.6780045351473923,441,multi_swebench,FNN
+multi_swebench::c09fd8e139e97004,0.26720713150930553,0.5263157894736842,114,multi_swebench,FNN
+multi_swebench::ca2e13bbf3cae12b,0.43586106906385286,0.20059880239520958,334,multi_swebench,FNN
+multi_swebench::cb5bf80d06d64238,0.2244222449380809,0.6111111111111112,792,multi_swebench,FNN
+multi_swebench::d19bacfd3b272831,0.27133343994755377,0.472,125,multi_swebench,FNN
+multi_swebench::d330a45fdfcd793e,0.25440577378170776,0.5068493150684932,365,multi_swebench,FNN
+multi_swebench::d79b3584f7cdf43e,0.22152714498794512,0.6357308584686775,1293,multi_swebench,FNN
+multi_swebench::d7f8f34e5431d46a,0.2783582482210394,0.4601593625498008,1506,multi_swebench,FNN
+multi_swebench::d8b21fda77346236,0.2698175854693975,0.4769874476987448,1434,multi_swebench,FNN
+multi_swebench::dfdf1f03150cbea5,0.3229274030681015,0.3278282411230388,1211,multi_swebench,FNN
+multi_swebench::ea550b0c061dd6a8,0.12135431182206467,0.8726708074534162,966,multi_swebench,FNN
+multi_swebench::f7ab33199d54c4fa,0.2706261920497742,0.49795918367346936,490,multi_swebench,FNN
+multi_swebench::f7db65a17ebdaedd,0.2911272340878907,0.4609375,128,multi_swebench,FNN
+multi_swebench::fd491100aebc6d61,0.3992910431858465,0.17003367003367004,1188,multi_swebench,FNN
+multi_swebench::fdfa78c5313f3f80,0.30735585028332574,0.4451901565995526,447,multi_swebench,FNN
+multi_swebench::fe9f4154bab89b2f,0.156245891108046,0.8007518796992481,266,multi_swebench,FNN
+multi_swebench::ff3d82b8c43ed448,0.44974630926931847,0.11345218800648298,1234,multi_swebench,FNN
+multi_swebench::0060b6030d4c2297,0.2200889637267811,0.963245492371706,1442,multi_swebench,Training mean
+multi_swebench::025aabe505688d89,0.22985978185990327,0.8173913043478261,115,multi_swebench,Training mean
+multi_swebench::0771fe5228c63bc8,0.23740486091938562,0.7047619047619048,210,multi_swebench,Training mean
+multi_swebench::0e87ac570be0d836,0.22600055713876177,0.875,80,multi_swebench,Training mean
+multi_swebench::0f3db4570fff74a1,0.2352831299834556,0.7364341085271318,387,multi_swebench,Training mean
+multi_swebench::16efb396e2d5a975,0.23856124137266566,0.6875,128,multi_swebench,Training mean
+multi_swebench::1c1d25ff392169fc,0.22191103203935122,0.936046511627907,344,multi_swebench,Training mean
+multi_swebench::207c39f830ba23ba,0.24830833233817506,0.542,500,multi_swebench,Training mean
+multi_swebench::21783e6753f98050,0.22683107857127346,0.8626023657870792,1099,multi_swebench,Training mean
+multi_swebench::24eef64fe5529abd,0.24030852815585965,0.6614173228346457,127,multi_swebench,Training mean
+multi_swebench::28bd15affa843e2b,0.2207193957855145,0.9538346984363366,1343,multi_swebench,Training mean
+multi_swebench::2b50203030771cd7,0.24430072322625296,0.601823708206687,329,multi_swebench,Training mean
+multi_swebench::2cc455fb34d0a9ad,0.23800237796036214,0.6958424507658644,457,multi_swebench,Training mean
+multi_swebench::2f2d9bc6ef80b763,0.2208046763740729,0.952561669829222,1054,multi_swebench,Training mean
+multi_swebench::370de70a197c04ad,0.22161097730967041,0.9405255878284924,1446,multi_swebench,Training mean
+multi_swebench::37c35d397d65cbd5,0.250976294485017,0.5021739130434782,460,multi_swebench,Training mean
+multi_swebench::38232d25a0ad0caf,0.23476382520892727,0.7441860465116279,129,multi_swebench,Training mean
+multi_swebench::3a75ba40153f3d31,0.2214186723238786,0.9433962264150944,636,multi_swebench,Training mean
+multi_swebench::3cd24d59a3eb8d36,0.22001927893214088,0.9642857142857143,1120,multi_swebench,Training mean
+multi_swebench::3f2906bbb64dc1a7,0.22408991784684398,0.9035211267605634,1420,multi_swebench,Training mean
+multi_swebench::404df11a8f0eb225,0.24531609822734288,0.5866666666666667,300,multi_swebench,Training mean
+multi_swebench::40a7fdaf49a952d1,0.24584390071636347,0.5787878787878787,330,multi_swebench,Training mean
+multi_swebench::4195148f31e2ccbe,0.24145665614631845,0.6442786069651741,402,multi_swebench,Training mean
+multi_swebench::43b3aa25f1c9ac54,0.24097459893324594,0.6514745308310992,373,multi_swebench,Training mean
+multi_swebench::44445017f07cd5bb,0.22318914045102875,0.9169675090252708,1385,multi_swebench,Training mean
+multi_swebench::478e32f5f2e8d435,0.22172062028869083,0.9388888888888889,1260,multi_swebench,Training mean
+multi_swebench::497710dbee0c39f1,0.2201977211204919,0.9616220130340333,1381,multi_swebench,Training mean
+multi_swebench::52d2da3dd5e8e892,0.2517786934096495,0.49019607843137253,255,multi_swebench,Training mean
+multi_swebench::5b7d845b713f0a75,0.2261528078567485,0.8727272727272727,110,multi_swebench,Training mean
+multi_swebench::5c145555b04ef5b5,0.2272733731411307,0.856,500,multi_swebench,Training mean
+multi_swebench::615494f08b332496,0.22008405434678024,0.9633187772925764,1145,multi_swebench,Training mean
+multi_swebench::684b9d536a71d22f,0.22086601132023864,0.9516460905349794,972,multi_swebench,Training mean
+multi_swebench::6af81d85146bcb93,0.24238405831341903,0.6304347826086957,414,multi_swebench,Training mean
+multi_swebench::6d2824c69903ab18,0.2457106424192299,0.5807770961145194,489,multi_swebench,Training mean
+multi_swebench::724aee89f8778c84,0.2253542812694655,0.8846473029045643,1205,multi_swebench,Training mean
+multi_swebench::72cff09aa4921232,0.22148903238410575,0.9423459244532804,1509,multi_swebench,Training mean
+multi_swebench::77fdd84b9bc0ce7f,0.22271061771096193,0.9241106719367589,1265,multi_swebench,Training mean
+multi_swebench::7fb4ac8032107770,0.22796725553511044,0.8456420492348636,1503,multi_swebench,Training mean
+multi_swebench::80053c96384b7422,0.24631756961676657,0.5717171717171717,495,multi_swebench,Training mean
+multi_swebench::805299b1004f8f9b,0.22475339700206212,0.8936170212765957,94,multi_swebench,Training mean
+multi_swebench::822ca968c5445ac2,0.24789434079271844,0.5481798715203426,467,multi_swebench,Training mean
+multi_swebench::824ab268396d500f,0.21828417997445967,0.9901864573110893,1019,multi_swebench,Training mean
+multi_swebench::85589dd8292f59fc,0.23640026343995102,0.719758064516129,496,multi_swebench,Training mean
+multi_swebench::861eb5f2bb11cae6,0.22208387449674163,0.9334664005322688,1503,multi_swebench,Training mean
+multi_swebench::86def10d8ae79737,0.24320488827126044,0.6181818181818182,495,multi_swebench,Training mean
+multi_swebench::884159882674fe77,0.23184221930236343,0.7877984084880637,377,multi_swebench,Training mean
+multi_swebench::8c80d15675b87985,0.22309642796907742,0.9183514774494557,1286,multi_swebench,Training mean
+multi_swebench::8f12d093d149a8b3,0.22609007286702412,0.8736637512147716,1029,multi_swebench,Training mean
+multi_swebench::8f6d5a5c51a8db9d,0.22288539313080835,0.9215017064846417,1172,multi_swebench,Training mean
+multi_swebench::90a3f141484f3f29,0.24523764110059654,0.5878378378378378,148,multi_swebench,Training mean
+multi_swebench::918ee3ad929f8490,0.23483193075312772,0.7431693989071039,366,multi_swebench,Training mean
+multi_swebench::9459e87bf47ab79d,0.22558100557203795,0.8812628689087165,1457,multi_swebench,Training mean
+multi_swebench::95c193154669589b,0.2486846480005452,0.5363825363825364,481,multi_swebench,Training mean
+multi_swebench::a1a3bd9bfb400f47,0.22339673646545616,0.9138686131386862,685,multi_swebench,Training mean
+multi_swebench::a21ee8b4dc43c0b3,0.25044112971313304,0.5101626016260162,492,multi_swebench,Training mean
+multi_swebench::a5e65b13dc82d0c1,0.25588600715407506,0.4288840262582057,457,multi_swebench,Training mean
+multi_swebench::a753a478725d91c7,0.23108600920302116,0.7990867579908676,219,multi_swebench,Training mean
+multi_swebench::aac580c3888aae09,0.2506241207112414,0.5074309978768577,471,multi_swebench,Training mean
+multi_swebench::ae3fa496735e1e18,0.23729364938575792,0.7064220183486238,436,multi_swebench,Training mean
+multi_swebench::b6291b37eb5f3f05,0.21911912617233256,0.9777227722772277,808,multi_swebench,Training mean
+multi_swebench::b6de0c0aab96e405,0.22203304260928639,0.9342251950947603,897,multi_swebench,Training mean
+multi_swebench::b875ada3e2ac99a6,0.24232177209035174,0.6313645621181263,491,multi_swebench,Training mean
+multi_swebench::b8dc37f628b47076,0.22170184621400338,0.9391691394658753,674,multi_swebench,Training mean
+multi_swebench::b97ba842627ad593,0.21898994268262936,0.9796511627906976,1032,multi_swebench,Training mean
+multi_swebench::b97c9a910c872ecc,0.25254725147708346,0.4787234042553192,470,multi_swebench,Training mean
+multi_swebench::bbf86ff66c98ae6e,0.2379821017367865,0.6961451247165533,441,multi_swebench,Training mean
+multi_swebench::c09fd8e139e97004,0.2505342912564454,0.5087719298245614,114,multi_swebench,Training mean
+multi_swebench::ca2e13bbf3cae12b,0.22986152594519133,0.8173652694610778,334,multi_swebench,Training mean
+multi_swebench::cb5bf80d06d64238,0.22160220306359005,0.9406565656565656,792,multi_swebench,Training mean
+multi_swebench::d19bacfd3b272831,0.23638405610545565,0.72,125,multi_swebench,Training mean
+multi_swebench::d330a45fdfcd793e,0.244055823790967,0.6054794520547945,365,multi_swebench,Training mean
+multi_swebench::d79b3584f7cdf43e,0.22156432682155416,0.9412219644238206,1293,multi_swebench,Training mean
+multi_swebench::d7f8f34e5431d46a,0.22234188948674372,0.9296148738379814,1506,multi_swebench,Training mean
+multi_swebench::d8b21fda77346236,0.2208968667526939,0.9511854951185496,1434,multi_swebench,Training mean
+multi_swebench::dfdf1f03150cbea5,0.2232139038240008,0.916597853014038,1211,multi_swebench,Training mean
+multi_swebench::ea550b0c061dd6a8,0.22053939008054269,0.9565217391304348,966,multi_swebench,Training mean
+multi_swebench::f7ab33199d54c4fa,0.24825091206739153,0.5428571428571428,490,multi_swebench,Training mean
+multi_swebench::f7db65a17ebdaedd,0.24379485980345894,0.609375,128,multi_swebench,Training mean
+multi_swebench::fd491100aebc6d61,0.22230706749871373,0.9301346801346801,1188,multi_swebench,Training mean
+multi_swebench::fdfa78c5313f3f80,0.24685073096774765,0.5637583892617449,447,multi_swebench,Training mean
+multi_swebench::fe9f4154bab89b2f,0.2284560292446377,0.8383458646616542,266,multi_swebench,Training mean
+multi_swebench::ff3d82b8c43ed448,0.221806876503131,0.9376012965964343,1234,multi_swebench,Training mean
+multi_swebench::0060b6030d4c2297,0.25,0.036754507628294034,1442,multi_swebench,Constant 0.5
+multi_swebench::025aabe505688d89,0.25,0.1826086956521739,115,multi_swebench,Constant 0.5
+multi_swebench::0771fe5228c63bc8,0.25,0.29523809523809524,210,multi_swebench,Constant 0.5
+multi_swebench::0e87ac570be0d836,0.25,0.125,80,multi_swebench,Constant 0.5
+multi_swebench::0f3db4570fff74a1,0.25,0.26356589147286824,387,multi_swebench,Constant 0.5
+multi_swebench::16efb396e2d5a975,0.25,0.3125,128,multi_swebench,Constant 0.5
+multi_swebench::1c1d25ff392169fc,0.25,0.06395348837209303,344,multi_swebench,Constant 0.5
+multi_swebench::207c39f830ba23ba,0.25,0.458,500,multi_swebench,Constant 0.5
+multi_swebench::21783e6753f98050,0.25,0.13739763421292084,1099,multi_swebench,Constant 0.5
+multi_swebench::24eef64fe5529abd,0.25,0.33858267716535434,127,multi_swebench,Constant 0.5
+multi_swebench::28bd15affa843e2b,0.25,0.04616530156366344,1343,multi_swebench,Constant 0.5
+multi_swebench::2b50203030771cd7,0.25,0.3981762917933131,329,multi_swebench,Constant 0.5
+multi_swebench::2cc455fb34d0a9ad,0.25,0.3041575492341357,457,multi_swebench,Constant 0.5
+multi_swebench::2f2d9bc6ef80b763,0.25,0.04743833017077799,1054,multi_swebench,Constant 0.5
+multi_swebench::370de70a197c04ad,0.25,0.059474412171507604,1446,multi_swebench,Constant 0.5
+multi_swebench::37c35d397d65cbd5,0.25,0.49782608695652175,460,multi_swebench,Constant 0.5
+multi_swebench::38232d25a0ad0caf,0.25,0.2558139534883721,129,multi_swebench,Constant 0.5
+multi_swebench::3a75ba40153f3d31,0.25,0.05660377358490566,636,multi_swebench,Constant 0.5
+multi_swebench::3cd24d59a3eb8d36,0.25,0.03571428571428571,1120,multi_swebench,Constant 0.5
+multi_swebench::3f2906bbb64dc1a7,0.25,0.09647887323943662,1420,multi_swebench,Constant 0.5
+multi_swebench::404df11a8f0eb225,0.25,0.41333333333333333,300,multi_swebench,Constant 0.5
+multi_swebench::40a7fdaf49a952d1,0.25,0.4212121212121212,330,multi_swebench,Constant 0.5
+multi_swebench::4195148f31e2ccbe,0.25,0.35572139303482586,402,multi_swebench,Constant 0.5
+multi_swebench::43b3aa25f1c9ac54,0.25,0.3485254691689008,373,multi_swebench,Constant 0.5
+multi_swebench::44445017f07cd5bb,0.25,0.08303249097472924,1385,multi_swebench,Constant 0.5
+multi_swebench::478e32f5f2e8d435,0.25,0.06111111111111111,1260,multi_swebench,Constant 0.5
+multi_swebench::497710dbee0c39f1,0.25,0.03837798696596669,1381,multi_swebench,Constant 0.5
+multi_swebench::52d2da3dd5e8e892,0.25,0.5098039215686274,255,multi_swebench,Constant 0.5
+multi_swebench::5b7d845b713f0a75,0.25,0.12727272727272726,110,multi_swebench,Constant 0.5
+multi_swebench::5c145555b04ef5b5,0.25,0.144,500,multi_swebench,Constant 0.5
+multi_swebench::615494f08b332496,0.25,0.03668122270742358,1145,multi_swebench,Constant 0.5
+multi_swebench::684b9d536a71d22f,0.25,0.04835390946502058,972,multi_swebench,Constant 0.5
+multi_swebench::6af81d85146bcb93,0.25,0.3695652173913043,414,multi_swebench,Constant 0.5
+multi_swebench::6d2824c69903ab18,0.25,0.41922290388548056,489,multi_swebench,Constant 0.5
+multi_swebench::724aee89f8778c84,0.25,0.11535269709543569,1205,multi_swebench,Constant 0.5
+multi_swebench::72cff09aa4921232,0.25,0.05765407554671968,1509,multi_swebench,Constant 0.5
+multi_swebench::77fdd84b9bc0ce7f,0.25,0.07588932806324111,1265,multi_swebench,Constant 0.5
+multi_swebench::7fb4ac8032107770,0.25,0.1543579507651364,1503,multi_swebench,Constant 0.5
+multi_swebench::80053c96384b7422,0.25,0.42828282828282827,495,multi_swebench,Constant 0.5
+multi_swebench::805299b1004f8f9b,0.25,0.10638297872340426,94,multi_swebench,Constant 0.5
+multi_swebench::822ca968c5445ac2,0.25,0.4518201284796574,467,multi_swebench,Constant 0.5
+multi_swebench::824ab268396d500f,0.25,0.009813542688910697,1019,multi_swebench,Constant 0.5
+multi_swebench::85589dd8292f59fc,0.25,0.28024193548387094,496,multi_swebench,Constant 0.5
+multi_swebench::861eb5f2bb11cae6,0.25,0.0665335994677312,1503,multi_swebench,Constant 0.5
+multi_swebench::86def10d8ae79737,0.25,0.38181818181818183,495,multi_swebench,Constant 0.5
+multi_swebench::884159882674fe77,0.25,0.21220159151193635,377,multi_swebench,Constant 0.5
+multi_swebench::8c80d15675b87985,0.25,0.08164852255054432,1286,multi_swebench,Constant 0.5
+multi_swebench::8f12d093d149a8b3,0.25,0.12633624878522837,1029,multi_swebench,Constant 0.5
+multi_swebench::8f6d5a5c51a8db9d,0.25,0.07849829351535836,1172,multi_swebench,Constant 0.5
+multi_swebench::90a3f141484f3f29,0.25,0.41216216216216217,148,multi_swebench,Constant 0.5
+multi_swebench::918ee3ad929f8490,0.25,0.2568306010928962,366,multi_swebench,Constant 0.5
+multi_swebench::9459e87bf47ab79d,0.25,0.11873713109128346,1457,multi_swebench,Constant 0.5
+multi_swebench::95c193154669589b,0.25,0.46361746361746364,481,multi_swebench,Constant 0.5
+multi_swebench::a1a3bd9bfb400f47,0.25,0.08613138686131387,685,multi_swebench,Constant 0.5
+multi_swebench::a21ee8b4dc43c0b3,0.25,0.4898373983739837,492,multi_swebench,Constant 0.5
+multi_swebench::a5e65b13dc82d0c1,0.25,0.5711159737417943,457,multi_swebench,Constant 0.5
+multi_swebench::a753a478725d91c7,0.25,0.2009132420091324,219,multi_swebench,Constant 0.5
+multi_swebench::aac580c3888aae09,0.25,0.49256900212314225,471,multi_swebench,Constant 0.5
+multi_swebench::ae3fa496735e1e18,0.25,0.29357798165137616,436,multi_swebench,Constant 0.5
+multi_swebench::b6291b37eb5f3f05,0.25,0.022277227722772276,808,multi_swebench,Constant 0.5
+multi_swebench::b6de0c0aab96e405,0.25,0.06577480490523968,897,multi_swebench,Constant 0.5
+multi_swebench::b875ada3e2ac99a6,0.25,0.36863543788187375,491,multi_swebench,Constant 0.5
+multi_swebench::b8dc37f628b47076,0.25,0.06083086053412463,674,multi_swebench,Constant 0.5
+multi_swebench::b97ba842627ad593,0.25,0.020348837209302327,1032,multi_swebench,Constant 0.5
+multi_swebench::b97c9a910c872ecc,0.25,0.5212765957446809,470,multi_swebench,Constant 0.5
+multi_swebench::bbf86ff66c98ae6e,0.25,0.30385487528344673,441,multi_swebench,Constant 0.5
+multi_swebench::c09fd8e139e97004,0.25,0.49122807017543857,114,multi_swebench,Constant 0.5
+multi_swebench::ca2e13bbf3cae12b,0.25,0.18263473053892215,334,multi_swebench,Constant 0.5
+multi_swebench::cb5bf80d06d64238,0.25,0.059343434343434344,792,multi_swebench,Constant 0.5
+multi_swebench::d19bacfd3b272831,0.25,0.28,125,multi_swebench,Constant 0.5
+multi_swebench::d330a45fdfcd793e,0.25,0.39452054794520547,365,multi_swebench,Constant 0.5
+multi_swebench::d79b3584f7cdf43e,0.25,0.05877803557617943,1293,multi_swebench,Constant 0.5
+multi_swebench::d7f8f34e5431d46a,0.25,0.0703851261620186,1506,multi_swebench,Constant 0.5
+multi_swebench::d8b21fda77346236,0.25,0.04881450488145049,1434,multi_swebench,Constant 0.5
+multi_swebench::dfdf1f03150cbea5,0.25,0.08340214698596202,1211,multi_swebench,Constant 0.5
+multi_swebench::ea550b0c061dd6a8,0.25,0.043478260869565216,966,multi_swebench,Constant 0.5
+multi_swebench::f7ab33199d54c4fa,0.25,0.45714285714285713,490,multi_swebench,Constant 0.5
+multi_swebench::f7db65a17ebdaedd,0.25,0.390625,128,multi_swebench,Constant 0.5
+multi_swebench::fd491100aebc6d61,0.25,0.06986531986531987,1188,multi_swebench,Constant 0.5
+multi_swebench::fdfa78c5313f3f80,0.25,0.436241610738255,447,multi_swebench,Constant 0.5
+multi_swebench::fe9f4154bab89b2f,0.25,0.16165413533834586,266,multi_swebench,Constant 0.5
+multi_swebench::ff3d82b8c43ed448,0.25,0.06239870340356564,1234,multi_swebench,Constant 0.5
+real_webagents::1a06f0f18530a417,0.33189571035417376,0.4918032786885246,61,real_webagents,FNN
+real_webagents::1f3d7abe68c706c0,0.3026233553958747,0.4107142857142857,112,real_webagents,FNN
+real_webagents::451fe321b883b94a,0.19053955921055465,0.7333333333333333,45,real_webagents,FNN
+real_webagents::553639df45642394,0.34047989638447146,0.375,112,real_webagents,FNN
+real_webagents::55fdc5e18ebe84af,0.042065201283723826,0.9821428571428571,112,real_webagents,FNN
+real_webagents::6842e28b19417e47,0.1675269137445262,0.7972972972972973,148,real_webagents,FNN
+real_webagents::7bc3eed814b23142,0.17337761864544338,0.7678571428571429,112,real_webagents,FNN
+real_webagents::7dee9bfbe006fb22,0.3527709627167985,0.4044943820224719,89,real_webagents,FNN
+real_webagents::7facc3df28eab6df,0.1948851824923455,0.71875,64,real_webagents,FNN
+real_webagents::7fcaa05b8c908c9f,0.26557232159789795,0.513317191283293,413,real_webagents,FNN
+real_webagents::82b51084b7e8a3e9,0.2573448378694921,0.5446428571428571,112,real_webagents,FNN
+real_webagents::8d0f7b00fa1ee7d4,0.199151292476678,0.7232142857142857,112,real_webagents,FNN
+real_webagents::94252e00abb3c60f,0.26756535328183473,0.6323529411764706,68,real_webagents,FNN
+real_webagents::9605092c664cd9d1,0.11708357723207068,0.875,112,real_webagents,FNN
+real_webagents::9976ea16dd7a56af,0.3327810031111106,0.5405405405405406,111,real_webagents,FNN
+real_webagents::9f1120099dc1d940,0.09933195085654913,0.8928571428571429,112,real_webagents,FNN
+real_webagents::a710d3c9478ce52e,0.1587002246967137,0.7946428571428571,112,real_webagents,FNN
+real_webagents::aacefbdabb006bb4,0.23553082487148977,0.5982142857142857,112,real_webagents,FNN
+real_webagents::ab1a57252740ac07,0.36902611364581406,0.47959183673469385,196,real_webagents,FNN
+real_webagents::b06669275cee43f3,0.028651551805596188,0.9732142857142857,112,real_webagents,FNN
+real_webagents::b2e3b571cace61df,0.4989273585209433,0.35714285714285715,70,real_webagents,FNN
+real_webagents::b3a53e75aa1066aa,0.4963560978244205,0.3648068669527897,233,real_webagents,FNN
+real_webagents::b8d2171afab2c063,0.20969947128204805,0.708779443254818,467,real_webagents,FNN
+real_webagents::c623e58bdf70e751,0.16181707651899502,0.8660714285714286,112,real_webagents,FNN
+real_webagents::c68b0b4cebac1009,0.33049550687999385,0.4131455399061033,213,real_webagents,FNN
+real_webagents::c83364433ab21674,0.14909842725991718,0.8035714285714286,112,real_webagents,FNN
+real_webagents::e4b4ec61717e2e26,0.38722814885087614,0.330188679245283,106,real_webagents,FNN
+real_webagents::e620cf2a8e60ebef,0.2456521877933794,0.5625,32,real_webagents,FNN
+real_webagents::ea9a2b43d3bbc463,0.30904642994221676,0.5294117647058824,51,real_webagents,FNN
+real_webagents::ecb4549463b6a6ba,0.1042103226419068,0.9017857142857143,224,real_webagents,FNN
+real_webagents::f3c1964f1cdb72be,0.28601226836856675,0.457286432160804,199,real_webagents,FNN
+real_webagents::f41c6467f37d2cef,0.13235253986767623,0.8839285714285714,112,real_webagents,FNN
+real_webagents::fb756c177643c16c,0.4055750505372003,0.27472527472527475,91,real_webagents,FNN
+real_webagents::1a06f0f18530a417,0.27091020574650004,0.5245901639344263,61,real_webagents,Training mean
+real_webagents::1f3d7abe68c706c0,0.30380040287169596,0.42857142857142855,112,real_webagents,Training mean
+real_webagents::451fe321b883b94a,0.19940745199627744,0.7333333333333333,45,real_webagents,Training mean
+real_webagents::553639df45642394,0.3129755645697308,0.4017857142857143,112,real_webagents,Training mean
+real_webagents::55fdc5e18ebe84af,0.11418039444564279,0.9821428571428571,112,real_webagents,Training mean
+real_webagents::6842e28b19417e47,0.1774972760735228,0.7972972972972973,148,real_webagents,Training mean
+real_webagents::7bc3eed814b23142,0.17534813909920835,0.8035714285714286,112,real_webagents,Training mean
+real_webagents::7dee9bfbe006fb22,0.31974525316341196,0.38202247191011235,89,real_webagents,Training mean
+real_webagents::7facc3df28eab6df,0.20440281780965197,0.71875,64,real_webagents,Training mean
+real_webagents::7fcaa05b8c908c9f,0.25652499344453344,0.5665859564164649,413,real_webagents,Training mean
+real_webagents::82b51084b7e8a3e9,0.24874943268348698,0.5892857142857143,112,real_webagents,Training mean
+real_webagents::8d0f7b00fa1ee7d4,0.193698462495278,0.75,112,real_webagents,Training mean
+real_webagents::94252e00abb3c60f,0.22392252455939274,0.6617647058823529,68,real_webagents,Training mean
+real_webagents::9605092c664cd9d1,0.15088104123778212,0.875,112,real_webagents,Training mean
+real_webagents::9976ea16dd7a56af,0.26544657379162245,0.5405405405405406,111,real_webagents,Training mean
+real_webagents::9f1120099dc1d940,0.14476426677242557,0.8928571428571429,112,real_webagents,Training mean
+real_webagents::a710d3c9478ce52e,0.16311459016849522,0.8392857142857143,112,real_webagents,Training mean
+real_webagents::aacefbdabb006bb4,0.22734072205473904,0.6517857142857143,112,real_webagents,Training mean
+real_webagents::ab1a57252740ac07,0.2828286047047592,0.4897959183673469,196,real_webagents,Training mean
+real_webagents::b06669275cee43f3,0.11723878167832107,0.9732142857142857,112,real_webagents,Training mean
+real_webagents::b2e3b571cace61df,0.3282675007331222,0.35714285714285715,70,real_webagents,Training mean
+real_webagents::b3a53e75aa1066aa,0.32564227564069453,0.3648068669527897,233,real_webagents,Training mean
+real_webagents::b8d2171afab2c063,0.20121672490023446,0.728051391862955,467,real_webagents,Training mean
+real_webagents::c623e58bdf70e751,0.12029716891099936,0.9642857142857143,112,real_webagents,Training mean
+real_webagents::c68b0b4cebac1009,0.3203415394540686,0.38028169014084506,213,real_webagents,Training mean
+real_webagents::c83364433ab21674,0.16005620293581696,0.8482142857142857,112,real_webagents,Training mean
+real_webagents::e4b4ec61717e2e26,0.33426886435950975,0.33962264150943394,106,real_webagents,Training mean
+real_webagents::e620cf2a8e60ebef,0.23651588375277388,0.625,32,real_webagents,Training mean
+real_webagents::ea9a2b43d3bbc463,0.2759750758920348,0.5098039215686274,51,real_webagents,Training mean
+real_webagents::ecb4549463b6a6ba,0.13558910507439073,0.9196428571428571,224,real_webagents,Training mean
+real_webagents::f3c1964f1cdb72be,0.28363656342810856,0.48743718592964824,199,real_webagents,Training mean
+real_webagents::f41c6467f37d2cef,0.14170587953974728,0.9017857142857143,112,real_webagents,Training mean
+real_webagents::fb756c177643c16c,0.364027105299822,0.25274725274725274,91,real_webagents,Training mean
+real_webagents::1a06f0f18530a417,0.25,0.47540983606557374,61,real_webagents,Constant 0.5
+real_webagents::1f3d7abe68c706c0,0.25,0.5714285714285714,112,real_webagents,Constant 0.5
+real_webagents::451fe321b883b94a,0.25,0.26666666666666666,45,real_webagents,Constant 0.5
+real_webagents::553639df45642394,0.25,0.5982142857142857,112,real_webagents,Constant 0.5
+real_webagents::55fdc5e18ebe84af,0.25,0.017857142857142856,112,real_webagents,Constant 0.5
+real_webagents::6842e28b19417e47,0.25,0.20270270270270271,148,real_webagents,Constant 0.5
+real_webagents::7bc3eed814b23142,0.25,0.19642857142857142,112,real_webagents,Constant 0.5
+real_webagents::7dee9bfbe006fb22,0.25,0.6179775280898876,89,real_webagents,Constant 0.5
+real_webagents::7facc3df28eab6df,0.25,0.28125,64,real_webagents,Constant 0.5
+real_webagents::7fcaa05b8c908c9f,0.25,0.43341404358353514,413,real_webagents,Constant 0.5
+real_webagents::82b51084b7e8a3e9,0.25,0.4107142857142857,112,real_webagents,Constant 0.5
+real_webagents::8d0f7b00fa1ee7d4,0.25,0.25,112,real_webagents,Constant 0.5
+real_webagents::94252e00abb3c60f,0.25,0.3382352941176471,68,real_webagents,Constant 0.5
+real_webagents::9605092c664cd9d1,0.25,0.125,112,real_webagents,Constant 0.5
+real_webagents::9976ea16dd7a56af,0.25,0.4594594594594595,111,real_webagents,Constant 0.5
+real_webagents::9f1120099dc1d940,0.25,0.10714285714285714,112,real_webagents,Constant 0.5
+real_webagents::a710d3c9478ce52e,0.25,0.16071428571428573,112,real_webagents,Constant 0.5
+real_webagents::aacefbdabb006bb4,0.25,0.3482142857142857,112,real_webagents,Constant 0.5
+real_webagents::ab1a57252740ac07,0.25,0.5102040816326531,196,real_webagents,Constant 0.5
+real_webagents::b06669275cee43f3,0.25,0.026785714285714284,112,real_webagents,Constant 0.5
+real_webagents::b2e3b571cace61df,0.25,0.6428571428571429,70,real_webagents,Constant 0.5
+real_webagents::b3a53e75aa1066aa,0.25,0.6351931330472103,233,real_webagents,Constant 0.5
+real_webagents::b8d2171afab2c063,0.25,0.27194860813704497,467,real_webagents,Constant 0.5
+real_webagents::c623e58bdf70e751,0.25,0.03571428571428571,112,real_webagents,Constant 0.5
+real_webagents::c68b0b4cebac1009,0.25,0.6197183098591549,213,real_webagents,Constant 0.5
+real_webagents::c83364433ab21674,0.25,0.15178571428571427,112,real_webagents,Constant 0.5
+real_webagents::e4b4ec61717e2e26,0.25,0.660377358490566,106,real_webagents,Constant 0.5
+real_webagents::e620cf2a8e60ebef,0.25,0.375,32,real_webagents,Constant 0.5
+real_webagents::ea9a2b43d3bbc463,0.25,0.49019607843137253,51,real_webagents,Constant 0.5
+real_webagents::ecb4549463b6a6ba,0.25,0.08035714285714286,224,real_webagents,Constant 0.5
+real_webagents::f3c1964f1cdb72be,0.25,0.5125628140703518,199,real_webagents,Constant 0.5
+real_webagents::f41c6467f37d2cef,0.25,0.09821428571428571,112,real_webagents,Constant 0.5
+real_webagents::fb756c177643c16c,0.25,0.7472527472527473,91,real_webagents,Constant 0.5
+researchcodebench::0b840a32283e38bc,0.3922203895172835,0.5754716981132075,212,researchcodebench,FNN
+researchcodebench::1ba99d7bfc77bdf7,0.21136066433587564,0.7688679245283019,212,researchcodebench,FNN
+researchcodebench::2a0f1dd372d29f18,0.5395690438077075,0.41509433962264153,212,researchcodebench,FNN
+researchcodebench::458492ea23d79428,0.19964240290614332,0.7783018867924528,212,researchcodebench,FNN
+researchcodebench::50cbacf8db8037c0,0.42612124849512684,0.5424528301886793,212,researchcodebench,FNN
+researchcodebench::6842e28b19417e47,0.26204826722141605,0.7264150943396226,212,researchcodebench,FNN
+researchcodebench::7bc3eed814b23142,0.3949200745019752,0.5754716981132075,212,researchcodebench,FNN
+researchcodebench::7d65eb53a8cc7d83,0.18622425563052125,0.8018867924528302,212,researchcodebench,FNN
+researchcodebench::7facc3df28eab6df,0.4573653517492569,0.5,212,researchcodebench,FNN
+researchcodebench::7fcaa05b8c908c9f,0.45357321979421245,0.4811320754716981,212,researchcodebench,FNN
+researchcodebench::887aa841d605d9ed,0.1730554459200384,0.8160377358490566,212,researchcodebench,FNN
+researchcodebench::8d0f7b00fa1ee7d4,0.4830588470277584,0.47641509433962265,212,researchcodebench,FNN
+researchcodebench::9605092c664cd9d1,0.4014205016416719,0.5707547169811321,212,researchcodebench,FNN
+researchcodebench::96098bb6ed439973,0.30480346302192823,0.6273584905660378,212,researchcodebench,FNN
+researchcodebench::9f1120099dc1d940,0.11836276740680159,0.8773584905660378,212,researchcodebench,FNN
+researchcodebench::a0c325c2fb187522,0.13688157527523742,0.8490566037735849,212,researchcodebench,FNN
+researchcodebench::a4d27309c2e425cd,0.32411235178437536,0.6462264150943396,212,researchcodebench,FNN
+researchcodebench::a710d3c9478ce52e,0.444152303209367,0.5188679245283019,212,researchcodebench,FNN
+researchcodebench::aacefbdabb006bb4,0.5419879690035191,0.4056603773584906,212,researchcodebench,FNN
+researchcodebench::b39902e909e5e2b1,0.30139951673988985,0.6650943396226415,212,researchcodebench,FNN
+researchcodebench::b64aeb51ffc92d29,0.3327149978902306,0.6226415094339622,212,researchcodebench,FNN
+researchcodebench::b8d2171afab2c063,0.381785689302455,0.589622641509434,212,researchcodebench,FNN
+researchcodebench::c4b92774167fdb17,0.2913309970586798,0.6886792452830188,212,researchcodebench,FNN
+researchcodebench::c68b0b4cebac1009,0.4217956672021023,0.5141509433962265,212,researchcodebench,FNN
+researchcodebench::c79ad66af123f967,0.2126070233498693,0.75,212,researchcodebench,FNN
+researchcodebench::d26303797657ef58,0.01500207752051947,0.9858490566037735,212,researchcodebench,FNN
+researchcodebench::df7a8ca73c2af2a9,0.07445236466772323,0.9198113207547169,212,researchcodebench,FNN
+researchcodebench::e4b4ec61717e2e26,0.3810545489276656,0.5471698113207547,212,researchcodebench,FNN
+researchcodebench::e5fd3821ad3279db,0.2502092066103609,0.7405660377358491,212,researchcodebench,FNN
+researchcodebench::ed0e0afb6177a010,0.2650392949069205,0.6933962264150944,212,researchcodebench,FNN
+researchcodebench::f3c1964f1cdb72be,0.5361711010227104,0.38443396226415094,424,researchcodebench,FNN
+researchcodebench::0b840a32283e38bc,0.2541719596115164,0.5754716981132075,212,researchcodebench,Training mean
+researchcodebench::1ba99d7bfc77bdf7,0.18655708514285696,0.7688679245283019,212,researchcodebench,Training mean
+researchcodebench::2a0f1dd372d29f18,0.31024283112211204,0.41509433962264153,212,researchcodebench,Training mean
+researchcodebench::458492ea23d79428,0.18325879858341015,0.7783018867924528,212,researchcodebench,Training mean
+researchcodebench::50cbacf8db8037c0,0.2657159625695802,0.5424528301886793,212,researchcodebench,Training mean
+researchcodebench::6842e28b19417e47,0.20139937466036756,0.7264150943396226,212,researchcodebench,Training mean
+researchcodebench::7bc3eed814b23142,0.2541719596115164,0.5754716981132075,212,researchcodebench,Training mean
+researchcodebench::7d65eb53a8cc7d83,0.17501308218479314,0.8018867924528302,212,researchcodebench,Training mean
+researchcodebench::7facc3df28eab6df,0.28055825208709084,0.5,212,researchcodebench,Training mean
+researchcodebench::7fcaa05b8c908c9f,0.28715482520598445,0.4811320754716981,212,researchcodebench,Training mean
+researchcodebench::887aa841d605d9ed,0.17006565234562293,0.8160377358490566,212,researchcodebench,Training mean
+researchcodebench::8d0f7b00fa1ee7d4,0.28880396848570783,0.47641509433962265,212,researchcodebench,Training mean
+researchcodebench::9605092c664cd9d1,0.2558211028912398,0.5707547169811321,212,researchcodebench,Training mean
+researchcodebench::96098bb6ed439973,0.236031383534559,0.6273584905660378,212,researchcodebench,Training mean
+researchcodebench::9f1120099dc1d940,0.14862678970921875,0.8773584905660378,212,researchcodebench,Training mean
+researchcodebench::a0c325c2fb187522,0.15852164938755914,0.8490566037735849,212,researchcodebench,Training mean
+researchcodebench::a4d27309c2e425cd,0.22943481041566538,0.6462264150943396,212,researchcodebench,Training mean
+researchcodebench::a710d3c9478ce52e,0.27396167896819723,0.5188679245283019,212,researchcodebench,Training mean
+researchcodebench::aacefbdabb006bb4,0.31354111768155885,0.4056603773584906,212,researchcodebench,Training mean
+researchcodebench::b39902e909e5e2b1,0.22283823729677177,0.6650943396226415,212,researchcodebench,Training mean
+researchcodebench::b64aeb51ffc92d29,0.2376805268142824,0.6226415094339622,212,researchcodebench,Training mean
+researchcodebench::b8d2171afab2c063,0.2492245297723462,0.589622641509434,212,researchcodebench,Training mean
+researchcodebench::c4b92774167fdb17,0.21459252089815478,0.6886792452830188,212,researchcodebench,Training mean
+researchcodebench::c68b0b4cebac1009,0.2756108222479206,0.5141509433962265,212,researchcodebench,Training mean
+researchcodebench::c79ad66af123f967,0.19315365826175054,0.75,212,researchcodebench,Training mean
+researchcodebench::d26303797657ef58,0.11069649427558051,0.9858490566037735,212,researchcodebench,Training mean
+researchcodebench::df7a8ca73c2af2a9,0.13378450019170812,0.9198113207547169,212,researchcodebench,Training mean
+researchcodebench::e4b4ec61717e2e26,0.2640668192898568,0.5471698113207547,212,researchcodebench,Training mean
+researchcodebench::e5fd3821ad3279db,0.19645194482119735,0.7405660377358491,212,researchcodebench,Training mean
+researchcodebench::ed0e0afb6177a010,0.21294337761843138,0.6933962264150944,212,researchcodebench,Training mean
+researchcodebench::f3c1964f1cdb72be,0.32096226244031417,0.38443396226415094,424,researchcodebench,Training mean
+researchcodebench::0b840a32283e38bc,0.25,0.42452830188679247,212,researchcodebench,Constant 0.5
+researchcodebench::1ba99d7bfc77bdf7,0.25,0.23113207547169812,212,researchcodebench,Constant 0.5
+researchcodebench::2a0f1dd372d29f18,0.25,0.5849056603773585,212,researchcodebench,Constant 0.5
+researchcodebench::458492ea23d79428,0.25,0.22169811320754718,212,researchcodebench,Constant 0.5
+researchcodebench::50cbacf8db8037c0,0.25,0.45754716981132076,212,researchcodebench,Constant 0.5
+researchcodebench::6842e28b19417e47,0.25,0.27358490566037735,212,researchcodebench,Constant 0.5
+researchcodebench::7bc3eed814b23142,0.25,0.42452830188679247,212,researchcodebench,Constant 0.5
+researchcodebench::7d65eb53a8cc7d83,0.25,0.19811320754716982,212,researchcodebench,Constant 0.5
+researchcodebench::7facc3df28eab6df,0.25,0.5,212,researchcodebench,Constant 0.5
+researchcodebench::7fcaa05b8c908c9f,0.25,0.5188679245283019,212,researchcodebench,Constant 0.5
+researchcodebench::887aa841d605d9ed,0.25,0.18396226415094338,212,researchcodebench,Constant 0.5
+researchcodebench::8d0f7b00fa1ee7d4,0.25,0.5235849056603774,212,researchcodebench,Constant 0.5
+researchcodebench::9605092c664cd9d1,0.25,0.42924528301886794,212,researchcodebench,Constant 0.5
+researchcodebench::96098bb6ed439973,0.25,0.37264150943396224,212,researchcodebench,Constant 0.5
+researchcodebench::9f1120099dc1d940,0.25,0.12264150943396226,212,researchcodebench,Constant 0.5
+researchcodebench::a0c325c2fb187522,0.25,0.1509433962264151,212,researchcodebench,Constant 0.5
+researchcodebench::a4d27309c2e425cd,0.25,0.35377358490566035,212,researchcodebench,Constant 0.5
+researchcodebench::a710d3c9478ce52e,0.25,0.4811320754716981,212,researchcodebench,Constant 0.5
+researchcodebench::aacefbdabb006bb4,0.25,0.5943396226415094,212,researchcodebench,Constant 0.5
+researchcodebench::b39902e909e5e2b1,0.25,0.33490566037735847,212,researchcodebench,Constant 0.5
+researchcodebench::b64aeb51ffc92d29,0.25,0.37735849056603776,212,researchcodebench,Constant 0.5
+researchcodebench::b8d2171afab2c063,0.25,0.41037735849056606,212,researchcodebench,Constant 0.5
+researchcodebench::c4b92774167fdb17,0.25,0.3113207547169811,212,researchcodebench,Constant 0.5
+researchcodebench::c68b0b4cebac1009,0.25,0.4858490566037736,212,researchcodebench,Constant 0.5
+researchcodebench::c79ad66af123f967,0.25,0.25,212,researchcodebench,Constant 0.5
+researchcodebench::d26303797657ef58,0.25,0.014150943396226415,212,researchcodebench,Constant 0.5
+researchcodebench::df7a8ca73c2af2a9,0.25,0.08018867924528301,212,researchcodebench,Constant 0.5
+researchcodebench::e4b4ec61717e2e26,0.25,0.4528301886792453,212,researchcodebench,Constant 0.5
+researchcodebench::e5fd3821ad3279db,0.25,0.25943396226415094,212,researchcodebench,Constant 0.5
+researchcodebench::ed0e0afb6177a010,0.25,0.30660377358490565,212,researchcodebench,Constant 0.5
+researchcodebench::f3c1964f1cdb72be,0.25,0.6155660377358491,424,researchcodebench,Constant 0.5
+swe_rebench::58c3de46be1beb60,0.3281736569412901,0.5220204550198289,67074,swe_rebench,FNN
+swe_rebench::58c3de46be1beb60,0.33811440026604933,0.520514655455169,67074,swe_rebench,Training mean
+swe_rebench::58c3de46be1beb60,0.25,0.4794853445448311,67074,swe_rebench,Constant 0.5

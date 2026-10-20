@@ -34,6 +34,59 @@ class PipelineTests(unittest.TestCase):
         self.assertAlmostEqual(result["row_brier"], 0.1)
         self.assertAlmostEqual(result["pair_brier"], 0.5)
 
+    def test_lobo_keeps_the_test_benchmark_and_its_prompts_out(self):
+        from .lobo import split_lobo
+
+        frame = pd.DataFrame({
+            "source": ["held"] * 3 + ["other"] * 20,
+            "prompt_group": ["shared", "held-a", "held-b", "shared", *[f"train-{i}" for i in range(19)]],
+        })
+        training, validation, test, removed = split_lobo(frame, "held")
+        self.assertEqual(removed, 1)
+        self.assertEqual(len(test), 3)
+        self.assertEqual(len(training) + len(validation), 19)
+        self.assertFalse(set(training["prompt_group"]) & set(validation["prompt_group"]))
+        for part in (training, validation):
+            self.assertFalse(part["source"].eq("held").any())
+            self.assertFalse(set(part["prompt_group"]) & set(test["prompt_group"]))
+
+    def test_lobo_rejects_an_unknown_benchmark(self):
+        from .lobo import split_lobo
+
+        frame = pd.DataFrame({"source": ["a", "b"], "prompt_group": ["one", "two"]})
+        with self.assertRaisesRegex(ValueError, "No responses"):
+            split_lobo(frame, "missing")
+
+    def test_lobo_distinguishes_pair_benchmark_and_row_averages(self):
+        from .lobo import aggregate_pair_scores
+
+        pairs = pd.DataFrame({
+            "predictor": ["FNN"] * 3, "held_out": ["a", "a", "b"],
+            "brier": [0.1, 0.1, 0.9], "accuracy": [1.0, 1.0, 0.0], "rows": [10, 10, 1],
+        })
+        result = aggregate_pair_scores(pairs)["FNN"]
+        self.assertAlmostEqual(result["pair_brier"], 1.1 / 3)
+        self.assertAlmostEqual(result["benchmark_mean_brier"], 0.5)
+        self.assertAlmostEqual(result["row_brier"], 2.9 / 21)
+        self.assertAlmostEqual(result["row_accuracy"], 20 / 21)
+
+    def test_lobo_summary_uses_the_actual_model_and_scores(self):
+        from .lobo import make_team_summary
+
+        summary = {
+            "model": {"hidden": [8, 4], "loss": "bce", "dropout": 0.2, "l2": 0.001},
+            "aggregate": {
+                "FNN": {"pair_brier": 0.3, "benchmark_mean_brier": 0.31},
+                "Training mean": {"pair_brier": 0.2}, "Constant 0.5": {"pair_brier": 0.25},
+            },
+        }
+        folds = pd.DataFrame({
+            "held_out": ["a", "a"], "predictor": ["FNN", "Training mean"], "pair_brier": [0.3, 0.2],
+        })
+        text = make_team_summary(summary, folds)
+        for expected in ("8 and 4", "binary cross-entropy", "20% dropout", "0.3000", "0.2000", "0 of 1"):
+            self.assertIn(expected, text)
+
     def test_anonymous_ids_cannot_change_features(self):
         subject = {"normalized_name": "model-a", "provider": "organization"}
         a = feature_vector(subject, {"item_content": "Fix a bug", "benchmark_id": "a"}, "hash_text")
@@ -125,6 +178,61 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(weights["W0"].shape[1], 64)
             self.assertEqual(weights["W1"].shape, (64, 16))
             self.assertEqual(weights["W2"].shape, (16, 1))
+
+    def test_final_epochs_use_inner_validation_not_outer_test_scores(self):
+        from .experiments import refit_epoch_count
+
+        summary = {"folds": [{"best_epoch": epoch} for epoch in [7, 4, 3, 11]],
+                   "aggregate": {"FNN": {"pair_brier": 0.1}}}
+        self.assertEqual(refit_epoch_count(summary), 6)
+        summary["aggregate"]["FNN"]["pair_brier"] = 0.9
+        self.assertEqual(refit_epoch_count(summary), 6)
+
+    def test_final_epochs_require_valid_lobo_stopping_epochs(self):
+        from .experiments import refit_epoch_count
+
+        for summary in ({"folds": []}, {"folds": [{"best_epoch": 0}]}, {"folds": [{"best_epoch": None}]}):
+            with self.assertRaisesRegex(ValueError, "stopping epochs"):
+                refit_epoch_count(summary)
+
+    def test_full_data_fit_saves_a_matching_keras_checkpoint(self):
+        import keras
+        from .experiments import Method, fit_model
+        from .submission.features import network_logits, sigmoid
+
+        training = pd.DataFrame({"pair_key": ["a"] * 12, "response": np.array([0, 1] * 6, dtype=np.float32)})
+        features = np.arange(48, dtype=np.float32).reshape(12, 4) / 48
+        method = Method("tiny_final_fnn", "metadata", "fnn", "brier", hidden=(8, 4), dropout=0.0)
+        with tempfile.TemporaryDirectory() as directory:
+            checkpoint = Path(directory) / "final.keras"
+            weights, history, epoch, _ = fit_model(
+                method, training, None, features, epochs=2, seed=42, fixed_epochs=2, checkpoint_path=checkpoint,
+            )
+            restored = keras.models.load_model(checkpoint, compile=False)
+            np.testing.assert_allclose(restored.predict(features, verbose=0).reshape(-1),
+                                       sigmoid(network_logits(features, weights)), atol=1e-5)
+            self.assertEqual(len(history), 2)
+            self.assertEqual(epoch, 2)
+            self.assertFalse(any(key.startswith("val_") for key in history[0]))
+            keras.backend.clear_session()
+
+    def test_published_final_checkpoint_matches_submission_weights(self):
+        import keras
+
+        directory = Path(__file__).resolve().parent
+        summary = json.loads((directory / "results/final/summary.json").read_text())
+        config = json.loads((directory / "submission/config.json").read_text())
+        self.assertEqual(config, summary["config"])
+        self.assertTrue(config["refit_on_all_public"])
+        self.assertEqual(summary["validation_rows"], 0)
+        checkpoint = keras.models.load_model(directory / "results/final/final_fnn.keras", compile=False)
+        dense = [layer for layer in checkpoint.layers if isinstance(layer, keras.layers.Dense)]
+        with np.load(directory / "submission/weights.npz", allow_pickle=False) as weights:
+            for index, layer in enumerate(dense):
+                kernel, bias = layer.get_weights()
+                np.testing.assert_array_equal(kernel, weights[f"W{index}"])
+                np.testing.assert_array_equal(bias, weights[f"b{index}"])
+        keras.backend.clear_session()
 
     def test_baseline_cannot_be_packaged_as_main_fnn(self):
         from . import experiments

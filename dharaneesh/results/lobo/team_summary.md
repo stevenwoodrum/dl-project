@@ -1,0 +1,3 @@
+I ran LOBO on my SBERT FNN across the four binary benchmarks, holding out one benchmark at a time and training from scratch on the others. I kept the task embeddings, model metadata, and text statistics, with hidden layers of 64 and 16 neurons, Brier loss, 35% dropout, and L2 regularization (0.0001). Early stopping used a separate validation split.
+
+The overall equal-pair Brier was 0.2840, compared with 0.2318 for a training-average baseline and 0.2500 for constant 0.5 predictions. The FNN beat the training-average baseline on 1 of 4 benchmarks. The mean across benchmarks was 0.2949. The current model seems to learn the training benchmarks better than it transfers to new ones. These are local results, not CodaBench scores.

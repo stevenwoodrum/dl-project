@@ -1,0 +1,113 @@
+{
+  "run": "fnn_lobo_20261019_02",
+  "seed": 42,
+  "model": {
+    "name": "sbert_fnn_brier",
+    "features": "sbert",
+    "estimator": "fnn",
+    "loss": "brier",
+    "hidden": [
+      64,
+      16
+    ],
+    "dropout": 0.35,
+    "l2": 0.0001
+  },
+  "folds": [
+    {
+      "held_out": "multi_swebench",
+      "training_rows": 62203,
+      "validation_rows": 16104,
+      "test_rows": 57975,
+      "training_prompts": 5372,
+      "validation_prompts": 1344,
+      "test_prompts": 2078,
+      "duplicate_test_prompt_rows_removed_from_pool": 0,
+      "best_epoch": 7,
+      "epochs_completed": 11,
+      "training_seconds": 38.30815359999542,
+      "training_mean_probability": 0.466504842042923,
+      "checkpoint_parity_cases": 8
+    },
+    {
+      "held_out": "real_webagents",
+      "training_rows": 105728,
+      "validation_rows": 26105,
+      "test_rows": 4449,
+      "training_prompts": 6848,
+      "validation_prompts": 1713,
+      "test_prompts": 233,
+      "duplicate_test_prompt_rows_removed_from_pool": 0,
+      "best_epoch": 4,
+      "epochs_completed": 8,
+      "training_seconds": 34.111338200003956,
+      "training_mean_probability": 0.3287303149700165,
+      "checkpoint_parity_cases": 8
+    },
+    {
+      "held_out": "researchcodebench",
+      "training_rows": 104022,
+      "validation_rows": 25476,
+      "test_rows": 6784,
+      "training_prompts": 6865,
+      "validation_prompts": 1717,
+      "test_prompts": 212,
+      "duplicate_test_prompt_rows_removed_from_pool": 0,
+      "best_epoch": 3,
+      "epochs_completed": 7,
+      "training_seconds": 24.801389699990978,
+      "training_mean_probability": 0.32519081234931946,
+      "checkpoint_parity_cases": 8
+    },
+    {
+      "held_out": "swe_rebench",
+      "training_rows": 55272,
+      "validation_rows": 13936,
+      "test_rows": 67074,
+      "training_prompts": 2018,
+      "validation_prompts": 505,
+      "test_prompts": 6271,
+      "duplicate_test_prompt_rows_removed_from_pool": 0,
+      "best_epoch": 11,
+      "epochs_completed": 15,
+      "training_seconds": 30.07000710000284,
+      "training_mean_probability": 0.1819366067647934,
+      "checkpoint_parity_cases": 8
+    }
+  ],
+  "aggregate": {
+    "FNN": {
+      "pair_brier": 0.28399616967224045,
+      "benchmark_mean_brier": 0.2949147482534862,
+      "row_brier": 0.3058604469001464,
+      "row_accuracy": 0.5068387608048018,
+      "pairs": 147,
+      "rows": 136282,
+      "benchmarks": 4
+    },
+    "Training mean": {
+      "pair_brier": 0.2318251314146007,
+      "benchmark_mean_brier": 0.25734801792915507,
+      "row_brier": 0.2822841208052272,
+      "row_accuracy": 0.6714166214173551,
+      "pairs": 147,
+      "rows": 136282,
+      "benchmarks": 4
+    },
+    "Constant 0.5": {
+      "pair_brier": 0.25,
+      "benchmark_mean_brier": 0.25,
+      "row_brier": 0.25,
+      "row_accuracy": 0.3285833785826448,
+      "pairs": 147,
+      "rows": 136282,
+      "benchmarks": 4
+    }
+  },
+  "total_seconds": 298.97333219999564,
+  "training_seconds": 127.2908885999932,
+  "original_submission_unchanged": true,
+  "run_directory": "C:\\Users\\dhara\\Downloads\\aims\\aims\\data\\measurement-db\\approach1_outputs\\experiment_runs\\fnn_lobo_20261019_02",
+  "aggregation": "pair_brier gives every model-benchmark pair equal weight; benchmark_mean_brier averages the four fold scores equally",
+  "limitations": "One seed, four public binary benchmarks, no revealed-label adaptation. Public LOBO test results, not a CodaBench score."
+}

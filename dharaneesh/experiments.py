@@ -293,6 +293,8 @@ def fit_model(method, training, validation, all_features, epochs, seed, fixed_ep
         fitted = model.fit(train_x, train_y[:, None], sample_weight=sample_weights,
                            epochs=fixed_epochs or epochs, batch_size=512, verbose=2,
                            callbacks=callbacks, **kwargs)
+        if validation is None and checkpoint_path is not None:
+            model.save(checkpoint_path)
         history = pd.DataFrame(fitted.history).assign(epoch=lambda frame: np.arange(1, len(frame) + 1)).to_dict("records")
         best_epoch = int(np.argmin(fitted.history["val_pair_brier"]) + 1) if validation is not None else fixed_epochs
         dense = [layer for layer in model.layers if isinstance(layer, keras.layers.Dense)]
@@ -484,7 +486,7 @@ def check_export_predictions(examples, features, weights, bundle, config):
     return len(probes)
 
 
-def train_fnn_submission(data_dir, run_name, loss="brier", epochs=20, seed=42, encoder_dir=None):
+def train_fnn_submission(data_dir, run_name, loss="brier", epochs=20, seed=42, encoder_dir=None, publish=True):
     """Train and export the weekly FNN with a prompt-grouped 80/20 split."""
     if loss not in {"brier", "bce"}:
         raise ValueError("Choose brier or bce for the FNN training loss.")
@@ -533,13 +535,138 @@ def train_fnn_submission(data_dir, run_name, loss="brier", epochs=20, seed=42, e
         "previous_hosted_0_160724_model": "logistic regression plus adaptation, not this FNN",
     }
     save_json(run_dir / "fnn_summary.json", summary)
-    # Keep the frozen encoder outside Git; it is included in the ready-to-upload ZIP.
+    if publish:
+        # Keep the frozen encoder outside Git; it is included in the ready-to-upload ZIP.
+        for name in ("model.py", "features.py", "config.json", "weights.npz", "prediction_config.json", "requirements.txt"):
+            shutil.copy2(bundle / name, SUBMISSION_DIR / name)
+        result_dir = HERE / "results"
+        for name in ("fnn_history.csv", "fnn_training.png", "fnn_accuracy.png", "fnn_summary.json"):
+            shutil.copy2(run_dir / name, result_dir / name)
+        shutil.copy2(archive_path, HERE / "submission_fnn.zip")
+    print(json.dumps(summary, indent=2), flush=True)
+    return run_dir
+
+
+def refit_epoch_count(lobo_summary):
+    epochs = [fold.get("best_epoch") for fold in lobo_summary.get("folds", [])]
+    if not epochs or any(not isinstance(epoch, int) or isinstance(epoch, bool) or epoch < 1 for epoch in epochs):
+        raise ValueError("LOBO must contain positive integer inner-validation stopping epochs.")
+    return int(np.floor(np.median(epochs) + 0.5))
+
+
+def plot_final_training(run_dir, history):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    frame = pd.DataFrame(history)
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.8), layout="constrained")
+    for axis, metric, label in zip(axes, ("brier_score", "accuracy"), ("Training Brier", "Training accuracy")):
+        axis.plot(frame["epoch"], frame[metric], marker="o", color="#147d92")
+        axis.set(xlabel="Epoch", ylabel=f"Pair-weighted {label.lower()}", title=label)
+        axis.set_xticks(frame["epoch"].astype(int))
+        axis.grid(alpha=0.2)
+    axes[1].set_ylim(0, 1)
+    fig.suptitle("Final FNN fit on all eligible training responses")
+    fig.savefig(run_dir / "training.png", dpi=150)
+    plt.close(fig)
+
+
+def refit_fnn_submission(data_dir, run_name, lobo_summary_path=None, seed=42, encoder_dir=None):
+    """Refit the unchanged FNN on all binary training rows for a LOBO-derived epoch count."""
+    lobo_path = Path(lobo_summary_path) if lobo_summary_path else HERE / "results/lobo/summary.json"
+    lobo = json.loads(lobo_path.read_text())
+    previous_config = json.loads((SUBMISSION_DIR / "config.json").read_text())
+    if previous_config["method"] != lobo["model"] or previous_config["method"]["estimator"] != "fnn":
+        raise ValueError("The current FNN recipe does not match the evaluated LOBO model.")
+    if previous_config["adaptation_precision"] is not None or previous_config["feature_mode"] != "sbert":
+        raise ValueError("The final Approach 1 model must be the nonadaptive SBERT FNN.")
+    epochs = refit_epoch_count(lobo)
+    method = Method(**dict(lobo["model"], hidden=tuple(lobo["model"]["hidden"])))
+    run_dir = Path(data_dir) / "approach1_outputs" / "experiment_runs" / run_name
+    run_dir.mkdir(parents=True, exist_ok=False)
+    backup = run_dir / "previous_submission"
+    backup.mkdir()
+    for path in [*SUBMISSION_DIR.glob("*"), HERE / "submission_fnn.zip"]:
+        if path.is_file():
+            shutil.copy2(path, backup / path.name)
+    print("Loading all eligible binary training responses...", flush=True)
+    examples, inventory = load_examples(data_dir)
+    if sorted(examples["source"].unique()) != sorted(fold["held_out"] for fold in lobo["folds"]):
+        raise ValueError("Training benchmarks differ from the LOBO evaluation.")
+    lobo_manifest = lobo_path.parent / "data_manifest.json"
+    if not lobo_manifest.is_file():
+        lobo_manifest = Path(lobo["run_directory"]) / "data_manifest.json"
+    evaluated_inventory = json.loads(lobo_manifest.read_text())
+    if [row for row in inventory if row["used"]] != [row for row in evaluated_inventory if row["used"]]:
+        raise ValueError("The binary training data changed since LOBO; rerun evaluation first.")
+    save_json(run_dir / "data_manifest.json", inventory)
+    save_json(run_dir / "lobo_reference.json", lobo)
+    encoder_dir = find_encoder(data_dir, encoder_dir)
+    vectors, encoder_source = cached_embeddings(
+        examples, data_dir, encoder_dir, Path(data_dir) / "approach1_cache" / "experiment_cache",
+    )
+    print("Building the same 644 input features for the final fit...", flush=True)
+    features = build_features(examples, "sbert", vectors)
+    if features.shape[1] != previous_config["input_dimensions"]:
+        raise ValueError("Final feature dimensions do not match the evaluated FNN.")
+    save_json(run_dir / "encoder_source.json", encoder_source)
+    settings = {
+        "seed": seed, "model": asdict(method), "epochs": epochs,
+        "epoch_selection": "median inner-validation best epoch, rounded half up; no outer test scores used",
+        "lobo_stopping_epochs": [fold["best_epoch"] for fold in lobo["folds"]],
+        "training_rows": len(examples), "validation_rows": 0, "batch_size": 512, "learning_rate": 0.0005,
+        "training_weighting": "equal model-benchmark pair weight", "early_stopping": False,
+        "library_versions": {name: importlib.metadata.version(name) for name in (
+            "numpy", "pandas", "scikit-learn", "keras", "torch", "sentence-transformers",
+        )},
+    }
+    save_json(run_dir / "settings.json", settings)
+    source_dir = run_dir / "source"
+    source_dir.mkdir()
+    for path in (Path(__file__), SUBMISSION_DIR / "features.py", SUBMISSION_DIR / "model.py"):
+        shutil.copy2(path, source_dir / path.name)
+    print(f"Final FNN: {len(examples):,} responses; {epochs} fixed epochs; no validation split.", flush=True)
+    weights, history, _, seconds = fit_model(
+        method, examples, None, features, epochs, seed,
+        fixed_epochs=epochs, checkpoint_path=run_dir / "final_fnn.keras",
+    )
+    config = {
+        "recipe_version": RECIPE_VERSION, "feature_mode": "sbert", "method": asdict(method),
+        "shrinkage": 1.0, "adaptation_precision": None, "encoder_max_seq_length": 256,
+        "training_loss": method.loss, "input_dimensions": features.shape[1],
+        "refit_on_all_public": True, "refit_epochs": epochs, "training_rows": len(examples),
+        "training_data_policy": "all eligible native-binary item-level responses from the four public benchmarks",
+        "epoch_selection": settings["epoch_selection"], "lobo_run": lobo["run"],
+    }
+    bundle, archive = export_bundle(run_dir, method, weights, config, encoder_dir)
+    parity_cases = check_export_predictions(examples, features, weights, bundle, config)
+    probabilities = sigmoid(network_logits(features, weights))
+    pd.DataFrame(history).to_csv(run_dir / "history.csv", index=False)
+    plot_final_training(run_dir, history)
+    summary = {
+        "run": run_name, "config": config, "seed": seed, "training_rows": len(examples),
+        "training_prompts": examples["prompt_group"].nunique(), "training_pairs": examples["pair_key"].nunique(),
+        "validation_rows": 0, "epochs_completed": len(history), "training_seconds": seconds,
+        "training_fit_metrics": scores(examples, probabilities), "export_parity_cases": parity_cases,
+        "lobo_reference": {"run": lobo["run"], "stopping_epochs": settings["lobo_stopping_epochs"],
+                           "pair_brier": lobo["aggregate"]["FNN"]["pair_brier"],
+                           "benchmark_mean_brier": lobo["aggregate"]["FNN"]["benchmark_mean_brier"]},
+        "zip": str(archive.resolve()), "zip_sha256": file_sha256(archive),
+        "checkpoint": str((run_dir / "final_fnn.keras").resolve()),
+        "evaluation_note": "Full-data fit metrics are in-sample only. LOBO evaluates the recipe; no CodaBench score is claimed.",
+    }
+    save_json(run_dir / "summary.json", summary)
     for name in ("model.py", "features.py", "config.json", "weights.npz", "prediction_config.json", "requirements.txt"):
         shutil.copy2(bundle / name, SUBMISSION_DIR / name)
-    result_dir = HERE / "results"
-    for name in ("fnn_history.csv", "fnn_training.png", "fnn_accuracy.png", "fnn_summary.json"):
-        shutil.copy2(run_dir / name, result_dir / name)
-    shutil.copy2(archive_path, HERE / "submission_fnn.zip")
+    report_dir = HERE / "results/final"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    for name in ("history.csv", "training.png", "summary.json", "final_fnn.keras", "settings.json", "data_manifest.json"):
+        shutil.copy2(run_dir / name, report_dir / name)
+    report_manifest = HERE / "results/lobo/data_manifest.json"
+    if lobo_manifest.resolve() != report_manifest.resolve():
+        shutil.copy2(lobo_manifest, report_manifest)
+    shutil.copy2(archive, HERE / "submission_fnn.zip")
     print(json.dumps(summary, indent=2), flush=True)
     return run_dir
 
