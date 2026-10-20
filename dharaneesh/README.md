@@ -1,50 +1,32 @@
 # Approach 1: Text-Window FNN
 
-Open **Approach1_Experiments.ipynb** for the saved training outputs, graphs, and results. This folder now contains only the selected combined FNN. Earlier experiments were archived locally outside this repository.
+Open **Approach1_Experiments.ipynb**. It contains the architecture, saved training logs, LOBO results, graphs, and short report summary.
 
-## Method
+The model combines frozen MiniLM SBERT text-window embeddings, hashed model metadata, and four text statistics. The FNN has 32/16 ReLU hidden layers, dropout, L2 regularization, and a sigmoid output. Validation uses Brier loss, equal-pair weights, Adam, early stopping, and learning-rate scheduling. No logistic model, encoder fine-tuning, or revealed-label adaptation is used.
 
-The frozen all-MiniLM-L6-v2 encoder represents a task using up to four selected 254-token text windows. Their normalized embeddings are averaged and normalized again into 384 features. Short prompts keep the original single-window representation. The input also includes 256 hashed model-metadata features and four text statistics, giving 644 features in total.
+## Final Model
 
-The FNN has hidden layers of 32 and 16 ReLU neurons, 35% dropout after each hidden layer, L2 regularization of 0.0001, and a sigmoid probability output. Training uses equal model-benchmark-pair weights, Brier loss, Adam at an initial learning rate of 0.0005, a batch size of 512, a maximum of 20 epochs, early stopping with patience four, and ReduceLROnPlateau with patience two. There is no encoder fine-tuning, ensemble, logistic replacement, or revealed-label adaptation.
+The final FNN is trained from fresh initialization on **all 136,282 eligible native-binary responses** from four benchmarks, including the earlier validation rows. The other two dataset sections contain nonbinary outcomes and are not converted into artificial binary labels.
 
-## Results
+The refit uses **7 fixed epochs**, chosen as the median of the four inner-validation best epochs (9, 4, 5, 13). Its learning-rate plan is frozen from those inner-validation histories before training. All seven rates are 0.0005. There is no validation split, adaptive early stopping, or live plateau scheduler in the all-data fit.
 
-Four-fold local LOBO Brier was **0.261456**, compared with **0.283996** for the original FNN, **0.250000** for constant-0.5 predictions, and **0.231825** for the fitting-mean baseline. Lower is better. The new FNN improved on the original but did not beat these baselines. LOBO used initialization seed 42 and is public development evaluation, not a CodaBench score.
+The earlier local LOBO Brier is **0.261456**, compared with 0.283996 for the original FNN, 0.250000 for constant-0.5 predictions, and 0.231825 for the fitting-mean baseline. LOBO evaluates the recipe through separate fold models. Full-data training metrics are in-sample only, and no CodaBench score is claimed for the final model.
 
-Prompt-grouped 80/20 validation over initialization seeds 42, 123, and 2026 gave a mean equal-pair Brier of **0.161223**, with a sample standard deviation of **0.000700**. This familiar-benchmark validation also selects checkpoints and is not an independent test.
+## Essential Files
 
-## Files
+- `Approach1_Experiments.ipynb`: main notebook, with embedded graphs and outputs.
+- `approach1.py`: shared training, LOBO evaluation, and packaging code.
+- `model.keras`: compiled final FNN trained on all eligible data.
+- `results.json`: completed training logs, evaluation results, and packaging checks.
+- `submission/`: complete local predictor folder; its encoder is already bundled in the ZIP.
+- `submission_fnn.zip`: the file to upload manually to CodaBench.
 
-- `Approach1_Experiments.ipynb`: main notebook, with saved outputs and optional training cells.
-- `training.py`: validated data joins, shared feature preparation, and FNN training.
-- `lobo.py`: the existing held-out-benchmark evaluation procedure.
-- `results/validation/`: compiled selected model, training history, and validation results.
-- `results/lobo/`: selected-method fold results and graphs.
-- `submission/`: prediction code, trained weights, configuration, and local frozen encoder.
-- `submission_fnn.zip`: ready-to-upload CodaBench file, with `model.py` at the ZIP root.
-- `build_submission.py`: checks the saved checkpoint and rebuilds the ZIP.
-- `test_pipeline.py`: split, feature, model, and portable-inference checks.
+Earlier models, detailed reports, and tests are archived locally outside this repository. The frozen encoder is ignored as a loose Git folder to avoid storing it twice; `package` restores it from the ZIP on a fresh checkout.
 
-The packaged model is the combined method's **seed-42 prompt-validation checkpoint**, selected at epoch 12 after a 16-epoch run. It was fitted on **109,305 responses**, with **26,977 validation responses**. It is **not** a fit on all 136,282 responses and is **not** an outer-LOBO test-selected checkpoint. The scheduler ran during training; the best checkpoint preceded its first learning-rate reduction. The 0.261456 score evaluates the recipe using four separately fitted LOBO models, not the packaged checkpoint on an independent test set.
+## Run
 
-## Run Locally
+From the repository root, install `python -m pip install -r dharaneesh/requirements.txt` and select that environment in Jupyter. The notebook shows saved results without retraining by default.
 
-Run commands from the repository root using the same Python environment as the notebook:
+Rebuild the ZIP with `python -m dharaneesh.approach1 package`.
 
-```powershell
-python -m pip install -r dharaneesh/requirements.txt
-python -m unittest dharaneesh.test_pipeline -v
-python -m dharaneesh.build_submission
-```
-
-The large encoder is stored once in Git, inside `submission_fnn.zip`. On a fresh checkout, `build_submission` restores it into `submission/text_encoder/` before checking and packaging. The complete local submission folder can then be inspected or zipped again without downloading anything.
-
-To train a fresh checkpoint without replacing the published submission:
-
-```powershell
-python -m dharaneesh.training --data-dir "PATH_TO_MEASUREMENT_DB" --output "PATH_TO_A_NEW_RUN_FOLDER"
-python -m dharaneesh.lobo --data-dir "PATH_TO_MEASUREMENT_DB" --output "PATH_TO_A_NEW_LOBO_FOLDER"
-```
-
-Set `AIMS_ENCODER_DIR` in the notebook, or pass `--encoder-dir`, if the encoder is not in the dataset's local Hugging Face cache. New runs do not automatically replace the saved model or ZIP. Submission to CodaBench is manual.
+To repeat the full-data refit, use `python -m dharaneesh.approach1 refit --data-dir "PATH_TO_MEASUREMENT_DB" --output "PATH_TO_A_NEW_RUN_FOLDER" --encoder-dir "PATH_TO_LOCAL_MINILM"`. This replaces the active model and ZIP after fitting and checking the export. Use `train` instead of `refit` for a fresh 80/20 development run, or `lobo` for held-out-benchmark evaluation; these save separate run folders.

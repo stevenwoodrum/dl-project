@@ -22,16 +22,37 @@
   "training_weighting": "equal model-benchmark pairs",
   "adaptation_precision": null,
   "shrinkage": 1.0,
-  "refit_on_all_public": false,
+  "refit_on_all_public": true,
   "seed": 42,
-  "split_seed": 42,
-  "best_epoch": 12,
-  "epochs_completed": 16,
-  "training_rows": 109305,
-  "validation_rows": 26977,
-  "selection_metric": "prompt-grouped validation equal-pair Brier",
-  "checkpoint_sha256": "6ca1e1899437fef133c98f5a55706fa0d128f37eeb495f77ebcf0f0d5e4123f6",
-  "source_run": "fnn_optimization_20261020_04",
-  "source_checkpoint": "prompt/combined/seed_42/best_fnn.keras",
-  "evaluation_note": "LOBO evaluates the recipe using separate fold models; no CodaBench score is claimed."
+  "refit_epochs": 7,
+  "training_rows": 136282,
+  "validation_rows": 0,
+  "checkpoint_file": "model.keras",
+  "checkpoint_sha256": "e14a593f001856fa2c64031dd42f57f11163aa85770f2b85aa11870aac9e2247",
+  "refit_policy": {
+    "epochs": 7,
+    "learning_rates": [
+      0.0005,
+      0.0005,
+      0.0005,
+      0.0005,
+      0.0005,
+      0.0005,
+      0.0005
+    ],
+    "inner_best_epochs": [
+      9,
+      4,
+      5,
+      13
+    ],
+    "epoch_policy": "Median inner-validation best epoch, rounded half up.",
+    "learning_rate_policy": "Per-epoch median of the four inner-validation learning-rate histories; carry the last rate forward after a fold ends.",
+    "outer_test_scores_used": false,
+    "early_stopping": false,
+    "validation_rows": 0,
+    "note": "The schedule is frozen before fitting; no validation labels remain for adaptive stopping."
+  },
+  "source_run": "combined_full_data_20261020_01",
+  "evaluation_note": "LOBO evaluates the recipe through separate fold fits, not this full-data checkpoint."
 }

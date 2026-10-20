@@ -1,4 +1,4 @@
 __pycache__/
 .ipynb_checkpoints/
-# The complete encoder is already included in submission_fnn.zip.
+# The encoder is already bundled in the submission ZIP.
 /submission/text_encoder/
