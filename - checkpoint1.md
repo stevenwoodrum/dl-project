@@ -6,7 +6,7 @@ My recent iteration of this removes mmdocrag from training since it does not hav
 
 
 
-I used two input features: the normalized\_name (AI Model Name) and the item (task for AI Model). For the normalized\_name input I standardized (lowercased and stripped) and mapped to an integer ID (0 for missing/unseen) up to 132, the ID matches a 16 dim row in the embedding table that represents the model. For the task input prior to input I turned each task into a vector with SBERT, taking each unique item once (12,632 items) and running through all-MiniLM-L6-v2, each text became 384 numbers capturing its meaning. The vectors were saved to item\_emb.npy and their order to item\_emb\_ids.csv. Long tasks were truncated since MiniLM reads at most 256 tokens. I set the SBERT vectors as trainable=false (frozen) since I am doing leave-one-benchmark out and the held-out benchmark would not update. 
+I used two input features: the normalized\_name (AI Model Name) and the item (task for AI Model). For the normalized\_name input I standardized (lowercased and stripped) and mapped to an integer ID (0 for missing/unseen) up to 132, the ID matches a 16 dim row in the embedding table that represents the model. For the task input prior to input I turned each task into a vector with SBERT, taking each unique item once (12,632 items) and running through all-MiniLM-L6-v2, each text became 384 numbers capturing its meaning. The vectors were saved to item\_emb.npy and their order to item\_emb\_ids.csv. Long tasks were truncated since MiniLM reads at most 256 tokens. I set the SBERT vectors as trainable=false (frozen) since I am doing leave-one-benchmark out so training and held-out items stay in the same embedding space. 
 
 
 
@@ -28,11 +28,29 @@ For evaluation: I used brier as the loss metric since it is what the competition
 
 
 
+**matharena            0.2670**
+
+**multi\_swebench       0.3104**
+
+**real\_webagents       0.2839**
+
+**researchcodebench    0.3113**
+
+**swe\_rebench          0.2751**
+
+**Name: neural\_net, dtype: float32**
+
+
+
+**avg (5 folds): 0.2895**
+
+
+
 **- For each held-out benchmark, generate a plot of training and validation loss at each epoch.**
 
 
 
-Attached
+Attached (validation is the 10% of training benchmark items used for early stopping).
 
 
 
@@ -40,7 +58,7 @@ Attached
 
 
 
-Attached
+Attached (validation is the 10% of training benchmark items used for early stopping).
 
 
 
@@ -56,7 +74,7 @@ I used Adam (default and not tuned) and early stopping on validation MSE.
 
 
 
-
+Attached
 
 
 
@@ -64,7 +82,7 @@ I used Adam (default and not tuned) and early stopping on validation MSE.
 
 
 
-I do not believe approach 1 has a suitable ceiling to our goals, so we should move on to approach 2. Just due to the absence of data from the target benchmark at training, I am thinking TTA (approach 3) in the end will be most useful for accurate predictions. 
+I do not believe approach 1 has a suitable ceiling to our goals, so we should move on to approach 2. Approach 1 does achieve scoring items its never seen but it has a fundamental ceiling that I do not believe can be fixed with tuning. Approach 1 has no way to tell how hard a task is just what it is about, and this limits its potential. IRT in approach 2 could improve this fundamental issue by comparing ability against difficulty allowing for more accurate inference. Just due to the absence of data from the target benchmark at training, I am thinking TTA (approach 3) in the end will be most useful for accurate predictions. 
 
 
 
