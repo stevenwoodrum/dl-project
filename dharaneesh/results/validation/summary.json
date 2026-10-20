@@ -1,0 +1,14 @@
+{
+  "row_brier": 0.19150657211989977,
+  "pair_brier": 0.16193514222057304,
+  "accuracy": 0.6640100826630092,
+  "row_ece": 0.05795166986733645,
+  "pairs": 147,
+  "rows": 26977,
+  "best_epoch": 12,
+  "epochs_completed": 16,
+  "training_seconds": 29.80806219999795,
+  "checkpoint_parity_cases": 8,
+  "training_rows": 109305,
+  "validation_rows": 26977
+}

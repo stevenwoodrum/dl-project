@@ -1,4 +1,4 @@
-"""CodaBench entry point. No TensorFlow or Keras is needed for inference."""
+"""Portable prediction entry point for the selected 32/16 FNN."""
 
 from functools import lru_cache
 import json
@@ -13,9 +13,12 @@ os.environ.setdefault("USE_FLAX", "0")
 
 import numpy as np
 
-from features import (
-    RECIPE_VERSION, adapt_probability, clean, feature_vector, network_logits, sigmoid, subject_key,
-)
+if __package__:
+    from .features import RECIPE_VERSION, clean, feature_vector, network_logits, sigmoid
+    from .text_encoding import ENCODING_VERSION, encode_text
+else:
+    from features import RECIPE_VERSION, clean, feature_vector, network_logits, sigmoid
+    from text_encoding import ENCODING_VERSION, encode_text
 
 BASE = Path(__file__).resolve().parent
 
@@ -23,53 +26,37 @@ BASE = Path(__file__).resolve().parent
 @lru_cache(maxsize=1)
 def load_bundle():
     config = json.loads((BASE / "config.json").read_text(encoding="utf-8"))
-    if config["recipe_version"] != RECIPE_VERSION:
-        raise ValueError("Feature recipe and saved configuration do not match.")
+    if config["recipe_version"] != RECIPE_VERSION or config["encoding_recipe"] != ENCODING_VERSION:
+        raise ValueError("The feature recipe does not match the saved model.")
+    if config["method"]["hidden"] != [32, 16] or config.get("adaptation_precision") is not None:
+        raise ValueError("This bundle supports only the selected nonadaptive 32/16 FNN.")
     with np.load(BASE / "weights.npz", allow_pickle=False) as archive:
         weights = {key: archive[key].copy() for key in archive.files}
-    encoder = None
-    if config["feature_mode"] == "sbert":
-        from sentence_transformers import SentenceTransformer
-        import torch
+    shapes = {"W0": (644, 32), "b0": (32,), "W1": (32, 16), "b1": (16,),
+              "W2": (16, 1), "b2": (1,)}
+    if set(weights) != set(shapes) or any(weights[k].shape != shape or
+            weights[k].dtype != np.float32 or not np.isfinite(weights[k]).all() for k, shape in shapes.items()):
+        raise ValueError("The trained FNN weights have invalid shapes or values.")
+    from sentence_transformers import SentenceTransformer
+    import torch
 
-        torch.set_num_threads(4)
-        encoder = SentenceTransformer(str(BASE / "text_encoder"), device="cpu", local_files_only=True)
-        encoder.max_seq_length = config["encoder_max_seq_length"]
+    torch.set_num_threads(4)
+    encoder = SentenceTransformer(str(BASE / "text_encoder"), device="cpu", local_files_only=True)
+    encoder.max_seq_length = config["encoder_max_seq_length"]
     return config, weights, encoder
 
 
 @lru_cache(maxsize=512)
 def item_embedding(text):
-    _, _, encoder = load_bundle()
-    return encoder.encode([text], convert_to_numpy=True, normalize_embeddings=True,
-                          show_progress_bar=False)[0].astype(np.float32)
-
-
-def base_probability(subject, item):
-    config, weights, _ = load_bundle()
-    embedding = item_embedding(clean(item.get("item_content", ""))) if config["feature_mode"] == "sbert" else None
-    vector = feature_vector(subject, item, config["feature_mode"], embedding)
-    if vector.shape[0] != weights["W0"].shape[0]:
-        raise ValueError("Feature dimensions do not match the trained model.")
-    probability = float(sigmoid(network_logits(vector[None, :], weights))[0])
-    return 0.5 + config.get("shrinkage", 1.0) * (probability - 0.5)
+    return encode_text(load_bundle()[2], text)
 
 
 def predict(input: list, labeled: list | None = None) -> float:
+    # Revealed labels are deliberately unused in this fixed Approach 1 predictor.
     subject, item = input
-    config, _, _ = load_bundle()
-    probability = base_probability(subject, item)
-    precision = config.get("adaptation_precision")
-    if precision is not None and labeled:
-        evidence_probabilities, labels = [], []
-        benchmark = item.get("benchmark_id", "")
-        for pair, label in labeled:
-            evidence_subject, evidence_item = pair
-            if (subject_key(evidence_subject) == subject_key(subject)
-                    and evidence_item.get("benchmark_id", "") == benchmark):
-                evidence_probabilities.append(base_probability(evidence_subject, evidence_item))
-                labels.append(float(label))
-        probability = adapt_probability(probability, evidence_probabilities, labels, precision)
+    _, weights, _ = load_bundle()
+    vector = feature_vector(subject, item, item_embedding(clean(item.get("item_content", ""))))
+    probability = float(sigmoid(network_logits(vector[None, :], weights))[0])
     if not np.isfinite(probability) or not 0 <= probability <= 1:
-        raise ValueError("Prediction must be a finite probability between 0 and 1.")
-    return float(probability)
+        raise ValueError("Prediction must be a finite probability between zero and one.")
+    return probability

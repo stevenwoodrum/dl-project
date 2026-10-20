@@ -13,9 +13,8 @@ import time
 import numpy as np
 import pandas as pd
 
-from .experiments import (
-    HERE, SUBMISSION_DIR, Method, build_features, cached_embeddings, file_sha256,
-    find_encoder, fit_model, grouped_split, load_examples, save_json, scores,
+from .training import (
+    HERE, Method, find_encoder, fit_model, grouped_split, load_examples, load_features, save_json, scores,
 )
 from .submission.features import network_logits, sigmoid
 
@@ -109,7 +108,7 @@ def plot_lobo_results(run_dir, fold_scores, histories, predictions):
     for axis, source, label in zip(axes.flat, sources, labels):
         history = histories[source]
         best = int(history.loc[history["val_pair_brier"].idxmin(), "epoch"])
-        axis.plot(history["epoch"], history["brier_score"], label="training")
+        axis.plot(history["epoch"], history["train_pair_brier"], label="training (dropout off)")
         axis.plot(history["epoch"], history["val_pair_brier"], label="inner validation")
         axis.axvline(best, color="gray", linestyle=":", label=f"selected epoch {best}")
         axis.set(title=f"Held out: {label}", xlabel="Epoch", ylabel="Equal-pair Brier")
@@ -133,59 +132,22 @@ def plot_lobo_results(run_dir, fold_scores, histories, predictions):
     plt.close(fig)
 
 
-def run_lobo(data_dir, run_name, epochs=20, seed=42, encoder_dir=None):
-    start = time.perf_counter()
-    config = json.loads((SUBMISSION_DIR / "config.json").read_text())
-    if config["method"]["estimator"] != "fnn" or config["feature_mode"] != "sbert":
-        raise ValueError("LOBO expects the current SBERT FNN configuration.")
-    if config["adaptation_precision"] is not None or config["encoder_max_seq_length"] != 256:
-        raise ValueError("This evaluation uses the current nonadaptive, 256-token FNN recipe.")
-    method = Method(**dict(config["method"], hidden=tuple(config["method"]["hidden"])))
-    protected_paths = [*SUBMISSION_DIR.glob("*"), HERE / "submission_fnn.zip", *HERE.glob("results/fnn_*")]
-    protected = {str(path.relative_to(HERE)): file_sha256(path) for path in protected_paths if path.is_file()}
-    run_dir = Path(data_dir) / "approach1_outputs" / "experiment_runs" / run_name
-    run_dir.mkdir(parents=True, exist_ok=False)
-    examples, inventory = load_examples(data_dir)
-    save_json(run_dir / "data_manifest.json", inventory)
+def evaluate_lobo_folds(examples, features, method, run_dir, epochs=20, seed=42, split_seed=None,
+                        training_weighting="pair", record_common_metrics=False, learning_rate_schedule=False):
+    """Share identical folds, scoring, and checkpoint checks across FNN recipes."""
     sources = sorted(examples["source"].unique())
     if len(sources) < 2:
         raise ValueError("LOBO needs at least two benchmarks.")
-    encoder_dir = find_encoder(data_dir, encoder_dir)
-    vectors, encoder_source = cached_embeddings(
-        examples, data_dir, encoder_dir, Path(data_dir) / "approach1_cache" / "experiment_cache",
-    )
-    features = build_features(examples, "sbert", vectors)
-    if features.shape[1] != config["input_dimensions"]:
-        raise ValueError("LOBO features do not match the current FNN input dimensions.")
-    save_json(run_dir / "encoder_source.json", encoder_source)
-    source_dir = run_dir / "source"
-    source_dir.mkdir()
-    for path in (Path(__file__), HERE / "experiments.py", SUBMISSION_DIR / "features.py", SUBMISSION_DIR / "config.json"):
-        shutil.copy2(path, source_dir / path.name)
-    settings = {
-        "run": run_name, "method": asdict(method), "seed": seed, "max_epochs": epochs,
-        "sources": sources, "input_dimensions": features.shape[1],
-        "learning_rate": 0.0005, "batch_size": 512, "inner_validation_fraction": 0.2,
-        "early_stopping_patience": 4, "selection_metric": "inner-validation equal-pair Brier",
-        "label_policy": "native item-level binary responses only", "adaptation": False,
-        "initialization": "fresh FNN weights in every fold; no reuse of the submitted classifier",
-        "feature_policy": "fixed pretrained SBERT and stateless metadata/text transforms; no label-fitted preprocessing",
-        "baseline_policy": "constant 0.5 and response-average success rate from the fitting subset only",
-        "refit_policy": "keep the best inner-validation checkpoint; no refit on validation responses",
-        "library_versions": {name: importlib.metadata.version(name) for name in (
-            "numpy", "pandas", "scikit-learn", "keras", "torch", "sentence-transformers",
-        )},
-        "protected_artifacts": protected,
-    }
-    save_json(run_dir / "settings.json", settings)
     fold_rows, pair_rows, prediction_frames, fold_details, histories = [], [], [], [], {}
     for source in sources:
-        training, validation, test, removed = split_lobo(examples, source, seed)
+        training, validation, test, removed = split_lobo(examples, source, seed if split_seed is None else split_seed)
         fold_dir = run_dir / "folds" / source
         fold_dir.mkdir(parents=True)
         print(f"\nHold out {source}: fit={len(training):,}, validation={len(validation):,}, test={len(test):,}", flush=True)
         weights, history, best_epoch, seconds = fit_model(
             method, training, validation, features, epochs, seed, checkpoint_path=fold_dir / "best_fnn.keras",
+            training_weighting=training_weighting, record_common_metrics=record_common_metrics,
+            learning_rate_schedule=learning_rate_schedule,
         )
         probabilities = sigmoid(network_logits(features[test.index], weights))
         np.savez_compressed(fold_dir / "weights.npz", **weights)
@@ -234,41 +196,38 @@ def run_lobo(data_dir, run_name, epochs=20, seed=42, encoder_dir=None):
         raise AssertionError("Every eligible response must be tested exactly once.")
     pair_results.to_csv(run_dir / "pair_scores.csv", index=False)
     predictions.to_parquet(run_dir / "test_predictions.parquet", index=False)
-    plot_lobo_results(run_dir, fold_scores, histories, predictions)
-    for relative, digest in protected.items():
-        if file_sha256(HERE / relative) != digest:
-            raise AssertionError(f"The original model or result was modified: {relative}")
-    summary = {
-        "run": run_name, "seed": seed, "model": asdict(method), "folds": fold_details,
-        "aggregate": aggregate_pair_scores(pair_results), "total_seconds": time.perf_counter() - start,
-        "training_seconds": sum(fold["training_seconds"] for fold in fold_details),
-        "original_submission_unchanged": True, "run_directory": str(run_dir.resolve()),
-        "aggregation": "pair_brier gives every model-benchmark pair equal weight; benchmark_mean_brier averages the four fold scores equally",
-        "limitations": "One seed, four public binary benchmarks, no revealed-label adaptation. Public LOBO test results, not a CodaBench score.",
-    }
-    save_json(run_dir / "summary.json", summary)
-    (run_dir / "team_summary.md").write_text(make_team_summary(summary, fold_scores), encoding="utf-8")
-    report_dir = HERE / "results" / "lobo"
-    report_dir.mkdir(parents=True, exist_ok=True)
-    for name in ("fold_scores.csv", "pair_scores.csv", "summary.json", "team_summary.md", "lobo_comparison.png",
-                 "lobo_learning_curves.png", "lobo_calibration.png"):
-        shutil.copy2(run_dir / name, report_dir / name)
-    for source in sources:
-        histories[source].to_csv(report_dir / f"history_{source}.csv", index=False)
-    print(fold_scores.pivot(index="held_out", columns="predictor", values="pair_brier").to_string(), flush=True)
-    print(json.dumps(summary, indent=2), flush=True)
-    return run_dir
+    return fold_scores, pair_results, predictions, fold_details, histories
+
+
+def run_lobo(data_dir, output, encoder_dir=None, seed=42):
+    """Reuse the existing outer folds and inner checkpoint selection unchanged."""
+    output = Path(output).resolve()
+    output.mkdir(parents=True, exist_ok=False)
+    examples, inventory = load_examples(data_dir)
+    features = load_features(examples, find_encoder(data_dir, encoder_dir), Path(data_dir) / "approach1_cache/combined")
+    examples = examples[["source", "response_id", "benchmark_id", "subject_id", "item_id",
+                         "prompt_group", "pair_key", "response"]].copy()
+    folds, pairs, predictions, details, histories = evaluate_lobo_folds(
+        examples, features, Method(), output, seed=seed, split_seed=42,
+        record_common_metrics=True, learning_rate_schedule=True,
+    )
+    summary = {"model": asdict(Method()), "seed": seed, "split_seed": 42,
+               "aggregate": aggregate_pair_scores(pairs), "folds": details,
+               "limitations": "Local public development LOBO, not a CodaBench score."}
+    save_json(output / "summary.json", summary)
+    save_json(output / "data_manifest.json", inventory)
+    plot_lobo_results(output, folds, histories, predictions)
+    return output
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", type=Path, required=True)
-    parser.add_argument("--run-name", required=True)
-    parser.add_argument("--epochs", type=int, default=20)
-    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--encoder-dir", type=Path)
+    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
-    run_lobo(args.data_dir, args.run_name, args.epochs, args.seed, args.encoder_dir)
+    run_lobo(args.data_dir, args.output, args.encoder_dir, args.seed)
 
 
 if __name__ == "__main__":
