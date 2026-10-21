@@ -42,11 +42,11 @@ def train_model() -> keras.Model:
     random.seed(RANDOM_SEED)
 
     benchmarks = (
-        "matharena+mmdocrag+multi_swebench+real_webagents+"
+        "multi_swebench+real_webagents+"
         "researchcodebench+swe_rebench"
     )
 
-    SAMPLE_SIZE = 100
+    SAMPLE_SIZE = 10000
 
     # ---------------------------------------------------------
     # Load lookup tables (items + subjects)
